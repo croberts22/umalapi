@@ -1,0 +1,976 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <title>MyAnimeList Unofficial API Documentation</title>
+
+  <meta name="keywords" content="api, documentation, anime, myanimelist, animelist, anime list, manga" />
+  <meta name="description" content="Documentation for the unofficial API for MyAnimeList.net." />
+
+  <link rel="stylesheet" href="/css/reset.css" type="text/css" />
+  <link rel="stylesheet" href="/css/skin.css" type="text/css" />
+</head>
+
+<body>
+
+<div id="container">
+
+  <h1 class="logo"><a href="/">MyAnimeList Unofficial API</a></h1>
+
+  <ul id="nav_main">
+    <li><a href="/">Home</a></li>
+    <li><a href="/docs/">API documentation</a></li>
+  </ul>
+
+  <h1>MyAnimeList Unofficial API Documentation</h1>
+
+  <p>This unofficial API is a supplement to the <a href="http://myanimelist.net/modules.php?go=api">official API</a>. The main reasons I'm working on this are:</p>
+  <ul>
+    <li>development of the official API has been rather slow,</li>
+    <li>to focus on the more commonly used features on MyAnimeList.net, and</li>
+    <li>to provide a developer-friendly API following HTTP REST principles.</li>
+  </ul>
+
+  <p>Please report any bugs to <a href="http://twitter.com/spacepyro">@spacepyro</a> on Twitter.</p>
+
+
+  <h2>Table of Contents</h2>
+
+  <ul class="toc">
+    <li>
+      <a href="#summary">Summary</a>
+      <ul>
+        <li><a href="#read_methods_summary">Read methods summary</a></li>
+        <li><a href="#write_methods_summary">Write methods summary</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#core_concepts">Core Concepts</a>
+      <ul>
+        <li><a href="#api_requests">Making API requests</a></li>
+        <li><a href="#response_types">Response types</a></li>
+        <li><a href="#data_formats">Data formats</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#errors">Errors</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#read_methods">Reading data from MyAnimeList</a>
+      <ul>
+        <li><a href="#read_profile">/profile - Read a user's profile</a></li>
+        <li><a href="#read_anime_list">/animelist - Read an anime list</a></li>
+        <li><a href="#read_anime">/anime - Read an anime's details</a></li>
+        <li><a href="#read_history">/history - Read a user's history</a></li>
+        <li><a href="#read_search_anime">/anime/search - Search anime</a></li>
+        <li><a href="#read_top_anime">/anime/top - Read the top anime</a></li>
+        <li><a href="#read_popular_anime">/anime/popular - Read the popular anime</a></li>
+        <li><a href="#read_upcoming_anime">/anime/upcoming - Read the upcoming anime</a></li>
+        <li><a href="#read_just_added_anime">/anime/just_added - Read the anime that have just been added to MyAnimeList</a></li>
+        <li><a href="#read_manga_list">/mangalist - Read a manga list</a></li>
+        <li><a href="#read_manga">/manga - Read a manga's details</a></li>
+        <li><a href="#read_search_manga">/manga/search - Search manga</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#write_methods">Writing data to MyAnimeList</a>
+      <ul>
+        <li><a href="#write_add_anime">Add anime to anime list</a></li>
+        <li><a href="#write_update_anime">Update an anime on user's anime list</a></li>
+        <li><a href="#write_delete_anime">Delete an anime from user's anime list</a></li>
+        <li><a href="#write_add_manga">Add manga to manga list</a></li>
+        <li><a href="#write_update_manga">Update a manga on user's manga list</a></li>
+        <li><a href="#write_delete_manga">Delete a manga from user's manga list</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#utility_methods">Utility methods</a>
+      <ul>
+        <li><a href="#verify_credentials">/account/verify_credentials - Test if user credentials are valid</a></li>
+      </ul>
+    </li>
+  </ul>
+
+
+  <h2 id="summary">Summary</h2>
+
+  <p>The MyAnimeList Unofficial API allows developers to interact with the <a href="http://myanimelist.net/">MyAnimeList</a> site programmatically via HTTP requests.</p>
+
+  <div class="section">
+    <h3 id="read_methods_summary">Read methods</h3>
+
+    <p>All read methods are HTTP GET requests. Some requests require <a href="#authentication">authentication</a>. The response <a href="#data_formats">data format</a> is JSON by default (see <a href="#data_formats">data formats</a> for XML responses).</p>
+
+    <table>
+      <thead>
+        <th>Request</th>
+        <th>Description</th>
+        <th>Example</th>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td><a href="#read_profile">/profile/<strong>username</strong></a></td>
+          <td>Fetch a user's MAL profile</td>
+          <td><a href="http://mal-api.com/animelist/xinil">http://umal-api.coreyjustinroberts.com/profile/xinil</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_anime_list">/animelist/<strong>username</strong></a></td>
+          <td>Fetch a user's anime list</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/animelist/xinil">http://umal-api.coreyjustinroberts.com/animelist/xinil</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_anime">/anime/<strong>anime_id</strong></a></td>
+          <td>Fetch an anime's details</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/anime/1887">http://umal-api.coreyjustinroberts.com/anime/1887</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_history">/history/<strong>username</strong></a></td>
+          <td>Fetch a user's history</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/history/xinil">http://umal-api.coreyjustinroberts.com/history/xinil</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_search_anime">/anime/search</a></td>
+          <td>Search for anime matching a query.</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/anime/search?q=haruhi">http://umal-api.coreyjustinroberts.com/anime/search?q=haruhi</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_top_anime">/anime/top</a></td>
+          <td>Fetch the top anime.</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/anime/top">http://umal-api.coreyjustinroberts.com/anime/top</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_popular_anime">/anime/popular</a></td>
+          <td>Fetch the popular anime.</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/anime/popular">http://umal-api.coreyjustinroberts.com/anime/popular</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_upcoming_anime">/anime/upcoming</a></td>
+          <td>Fetch the upcoming anime.</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/anime/upcoming">http://umal-api.coreyjustinroberts.com/anime/upcoming</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_just_added_anime">/anime/just_added</a></td>
+          <td>Fetch the just added anime.</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/anime/just_added">http://umal-api.coreyjustinroberts.com/anime/just_added</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_manga_list">/mangalist/<strong>username</strong></a></td>
+          <td>Fetch a user's manga list</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/mangalist/xinil">http://umal-api.coreyjustinroberts.com/mangalist/xinil</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_manga">/manga/<strong>manga_id</strong></a></td>
+          <td>Fetch a manga's details</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/manga/104">http://umal-api.coreyjustinroberts.com/manga/104</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="#read_search_manga">/manga/search</a></td>
+          <td>Search for manga matching a query.</td>
+          <td><a href="http://umal-api.coreyjustinroberts.com/manga/search?q=berserk">http://umal-api.coreyjustinroberts.com/manga/search?q=berserk</a></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <p>Check out the <a href="#read_methods">full documentation</a> for these read methods <a href="#read_methods">below</a>.</p>
+  </div>
+
+  <div class="section">
+    <h3 id="write_methods_summary">Write methods</h3>
+
+    <p>All write methods are HTTP POST, PUT or DELETE requests. Read the section on <a href="#http_verb_emulation">HTTP verb emulation</a> if you have difficulties performing PUT or DELETE requests. <a href="#authentication">Authentication</a> is required.</p>
+
+    <table>
+      <thead>
+        <th>Request</th>
+        <th>Method</th>
+        <th>Description</th>
+        <th>Arguments</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td nowrap="nowrap"><a href="#write_add_anime">/animelist/anime</a></td>
+          <td><code>POST</code></td>
+          <td>Add an anime to user's anime list</td>
+          <td class="args"><code>anime_id</code>, <code>status?</code>, <code>episodes?</code>, <code>score?</code></td>
+        </tr>
+
+        <tr>
+          <td nowrap="nowrap"><a href="#write_update_anime">/animelist/anime/<strong>anime_id</strong></a></td>
+          <td><code>PUT</code></td>
+          <td>Update an anime already on user's anime list</td>
+          <td class="args"><code>status?</code>, <code>episodes?</code>, <code>score?</code></td>
+        </tr>
+
+        <tr>
+          <td nowrap="nowrap"><a href="#write_delete_anime">/animelist/anime/<strong>anime_id</strong></a></td>
+          <td><code>DELETE</code></td>
+          <td>Delete an anime from user's anime list</td>
+          <td class="args">-</td>
+        </tr>
+
+        <tr>
+          <td nowrap="nowrap"><a href="#write_add_manga">/mangalist/manga</a></td>
+          <td><code>POST</code></td>
+          <td>Add a manga to user's manga list</td>
+          <td class="args"><code>manga_id</code>, <code>status?</code>, <code>chapters?</code>, <code>score?</code></td>
+        </tr>
+
+        <tr>
+          <td nowrap="nowrap"><a href="#write_update_manga">/mangalist/manga/<strong>manga_id</strong></a></td>
+          <td><code>PUT</code></td>
+          <td>Update a manga already on user's manga list</td>
+          <td class="args"><code>status?</code>, <code>chapters?</code>, <code>score?</code></td>
+        </tr>
+
+        <tr>
+          <td nowrap="nowrap"><a href="#write_delete_manga">/mangalist/manga/<strong>manga_id</strong></a></td>
+          <td><code>DELETE</code></td>
+          <td>Delete a manga from user's manga list</td>
+          <td class="args">-</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Check out the <a href="#write_methods">full documentation</a> for these write methods <a href="#write_methods">below</a>.</p>
+  </div>
+
+
+  <h2 id="core_concepts">Core Concepts</h2>
+
+  <div class="section">
+    <h3 id="api_requests">Making API requests</h3>
+
+    <p>All API methods are HTTP requests and support the full set of HTTP verbs - GET, POST, HEAD, PUT, DELETE. If your client doesn't support the full set of HTTP verbs and is capable of only GET and POST requests, <a href="#http_verb_emulation">HTTP verb emulation</a> is also supported.</p>
+
+    <h4 id="http_verb_emulation">HTTP verb emulation</h4>
+
+    <p>If you're using a client that only supports GET and POST requests, or making API requests from a web browser via AJAX, you'll need to fake PUT, DELETE and HEAD requests. Simply send along a <code>_method</code> parameter as part of your request body with the HTTP verb (case-insensitive).</p>
+
+    <p>For example, to emulate a HTTP DELETE to <code>/animelist/anime/1</code>:</p>
+
+    <blockquote>
+      <p><code>POST /animelist/anime/1</code></p>
+      <pre>Request body:<br /><code>_method=delete</code></pre>
+    </blockquote>
+  </div>
+
+  <div class="section">
+    <h3 id="response_types">Response types</h3>
+
+    <h4 id="type_anime_list">Anime list</h4>
+
+    <p>An anime list is a user's personal list of anime. It also includes statistics on a user based on her list, such as her average score given to anime and number of days spent watching anime.</p>
+
+    <p>Format:</p>
+    <ul>
+      <li>
+        <code>anime</code> - A list of <a href="#type_anime">anime</a>.
+      </li>
+      <li>
+        <code>statistics</code> - A hash/dictionary containing statistics.
+        <ul>
+          <li><code>days</code> - Number of days spent watching anime.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4 id="type_anime">Anime</h4>
+
+    <p>Note that not all these properties are available in <code>/animelist</code> requests and will be indicated below.</p>
+
+    <ul>
+      <li><code>id</code> - The anime ID.</li>
+      <li><code>title</code> - The anime title.</li>
+      <li>
+        <code>other_titles</code> - A hash/dictionary containing other titles this anime has.
+        <ul>
+          <li><code>synonyms</code> - A list of synonym(s) of the anime's title.</li>
+          <li><code>english</code> - A list of English title(s). <em>Not available in <code>/animelist</code> requests.</em></li>
+          <li><code>japanese</code> - A list of Japanese title(s). <em>Not available in <code>/animelist</code> requests.</em></li>
+        </ul>
+      </li>
+      <li><code>rank</code> - Global rank of this anime. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>popularity_rank</code> - Rank of this anime based on its popularity, i.e. number of users that have added this anime. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>image_url</code> - URL to an image for this anime.</li>
+      <li><code>type</code> - Type of anime. Possible values: <code>TV</code>, <code>Movie</code>, <code>OVA</code>, <code>ONA</code>, <code>Special</code>, <code>Music</code>.</li>
+      <li><code>episodes</code> - Number of episodes. <code>null</code> is returned if the number of episodes is unknown.</li>
+      <li><code>status</code> - Airing status of this anime. Possible values: <code>finished airing</code>, <code>currently airing</code>, <code>not yet aired</code>.</li>
+      <li><code>start_date</code> - Beginning date from which this anime was/will be aired.</li>
+      <li><code>end_date</code> - Ending air date of this anime.</li>
+      <li><code>classification</code> - Classification or rating of this anime. This is a freeform text field, with possible values like: <code>R - 17+ (violence &amp; profanity)</code>, <code>PG - Children</code>. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>members_score</code> - Weighted score members of MyAnimeList have given to this anime. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>members_count</code> - Number of members who have this anime on their list. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>favorited_count</code> - Number of members who have this anime marked as one of their favorites. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>synopsis</code> - Text describing the anime. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>genres</code> - A list of genres for this anime, e.g. <code>["Action", "Comedy", "Shounen"]</code>. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li><code>tags</code> - A list of popular tags for this anime, e.g. <code>["supernatural", "comedy"]</code>. <em>Not available in <code>/animelist</code> requests.</em></li>
+      <li>
+        <code>manga_adaptations</code> - A list of manga adaptations of this anime (or conversely, manga from which this anime is adapted). <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>manga_id</code> - ID of the manga.</li>
+          <li><code>title</code> - Title of the manga.</li>
+          <li><code>url</code> - URL to the manga on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>prequels</code> - A list of anime prequels of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>sequels</code> - A list of anime sequels of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>side_stories</code> - A list of anime side stories of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>parent_story</code> - Parent story of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>character_anime</code> - A list of character anime of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>spin_offs</code> - A list of spin-offs of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>summaries</code> - A list of summaries of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>alternative_versions</code> - A list of alternative versions of this anime. <em>Not available in <code>/animelist</code> requests.</em>
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>These additional properties are available for authenticated users who have the requested anime on their anime list:</p>
+    <ul>
+      <li><code>watched_status</code> - User's watched status of the anime. This is a string that is one of: <code>watching</code>, <code>completed</code>, <code>on-hold</code>, <code>dropped</code>, <code>plan to watch</code>.</li>
+      <li><code>watched_episodes</code> - Number of episodes already watched by the user.</li>
+      <li><code>score</code> - User's score for the anime, from 1 to 10.</li>
+    </ul>
+
+
+    <h4 id="type_manga_list">Manga list</h4>
+
+    <p>An anime list is a user's personal list of manga.</p>
+
+    <p>Format:</p>
+    <ul>
+      <li>
+        <code>manga</code> - A list of <a href="#type_manga">manga</a>.
+      </li>
+    </ul>
+
+
+    <h4 id="type_manga">Manga</h4>
+
+    <ul>
+      <li><code>id</code> - The manga ID.</li>
+      <li><code>title</code> - The manga title.</li>
+      <li>
+        <code>other_titles</code> - A hash/dictionary containing other titles this manga has.
+        <ul>
+          <li><code>synonyms</code> - A list of synonym(s) of the manga's title.</li>
+          <li><code>english</code> - A list of English title(s).</li>
+          <li><code>japanese</code> - A list of Japanese title(s).</li>
+        </ul>
+      </li>
+      <li><code>rank</code> - Global rank of this manga.</li>
+      <li><code>popularity_rank</code> - Rank of this manga based on its popularity, i.e. number of users that have added this manga.</li>
+      <li><code>image_url</code> - URL to an image for this manga.</li>
+      <li><code>type</code> - Type of manga. Possible values: <code>Manga</code>, <code>Novel</code>, <code>One Shot</code>, <code>Doujin</code>, <code>Manwha</code>, <code>Manhua</code>, <code>OEL</code> ("OEL manga" refers to "Original English-Language manga").</li>
+      <li><code>chapters</code> - Number of chapters. <code>null</code> is returned if the number of chapters is unknown.</li>
+      <li><code>volumes</code> - Number of volumes. <code>null</code> is returned if the number of volumes is unknown.</li>
+      <li><code>status</code> - Publishing status of this anime. Possible values: <code>finished</code>, <code>publishing</code>, <code>not yet published</code>.</li>
+      <li><code>members_score</code> - Weighted score members of MyAnimeList have given to this manga.</li>
+      <li><code>members_count</code> - Number of members who have this manga on their list.</li>
+      <li><code>favorited_count</code> - Number of members who have this manga marked as one of their favorites.</li>
+      <li><code>synopsis</code> - Text describing the manga.</li>
+      <li><code>genres</code> - A list of genres for this manga, e.g. <code>["Comedy", "Slice of Life"]</code>.</li>
+      <li><code>tags</code> - A list of popular tags for this manga, e.g. <code>["comedy", "slice of life"]</code>.</li>
+
+      <li>
+        <code>anime_adaptations</code> - A list of anime adaptations of this anime (or conversely, anime from which this manga is adapted).
+        <ul>
+          <li><code>anime_id</code> - ID of the anime.</li>
+          <li><code>title</code> - Title of the anime.</li>
+          <li><code>url</code> - URL to the anime on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>related_manga</code> - A list of related manga.
+        <ul>
+          <li><code>manga_id</code> - ID of the manga.</li>
+          <li><code>title</code> - Title of the manga.</li>
+          <li><code>url</code> - URL to the manga on the MyAnimeList website.</li>
+        </ul>
+      </li>
+      <li>
+        <code>alternative_versions</code> - A list of alternative versions of this manga.
+        <ul>
+          <li><code>manga_id</code> - ID of the manga.</li>
+          <li><code>title</code> - Title of the manga.</li>
+          <li><code>url</code> - URL to the manga on the MyAnimeList website.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p>These additional properties are available for authenticated users who have the requested manga on their manga list:</p>
+    <ul>
+      <li><code>read_status</code> - User's read status of the anime. This is a string that is one of: <code>reading</code>, <code>completed</code>, <code>on-hold</code>, <code>dropped</code>, <code>plan to read</code>.</li>
+      <li><code>chapters_read</code> - Number of chapters already read by the user.</li>
+      <li><code>volumes_read</code> - Number of volumes already read by the user.</li>
+      <li><code>score</code> - User's score for the manga, from 1 to 10.</li>
+    </ul>
+
+
+    <h4 id="type_user">User</h4>
+
+    <p>A representation of a MyAnimeList user.</p>
+
+    <p>Format:</p>
+    <ul>
+      <li><code>details</code> - user's general (not anime/manga-specific) details</a>.</li>
+      <li><code>anime_stats</code> - user's anime statistics</a>.</li>
+      <li><code>manga_stats</code> - user's manga statistics</a>.</li>
+    </ul>
+
+  </div>
+
+
+  <div class="section">
+    <h3 id="data_formats">Data formats</h3>
+
+    <p>The MyAnimeList Unofficial API supports both JSON and XML output formats. Specify the output format using the <code>format</code> parameter (JSON is the default):</p>
+
+    <blockquote>
+      <p>
+        <a href="http://umal-api.coreyjustinroberts.com/anime/1887?format=json">http://umal-api.coreyjustinroberts.com/anime/1887?format=json</a><br />
+        <a href="http://umal-api.coreyjustinroberts.com/anime/1887?format=xml">http://umal-api.coreyjustinroberts.com/anime/1887?format=xml</a>
+      </p>
+    </blockquote>
+  </div>
+
+
+  <div class="section">
+    <h3 id="authentication">Authentication</h3>
+
+    <p>Authentication is required for certain API requests. The MyAnimeList Unofficial API only supports <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">HTTP Basic Authentication</a> because of the limitations of the MyAnimeList site.</p>
+
+    <h4>Is my password secure?</h4>
+
+    <p>The MyAnimeList Unofficial API takes your username and password and authenticates it with <a href="http://myanimelist.net/">MyAnimeList</a> directly - no passwords are saved or logged.</p>
+
+    <p>However, it is clearly inferior to secure solutions like <a href="http://oauth.net/">OAuth</a> and requires you to trust an unofficial API with your MyAnimeList password. It bothers us too. You can help us bug the MyAnimeList developers at the <a href="http://myanimelist.net/clubs.php?cid=13727">MAL API club</a>.</p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="errors">Errors</h3>
+
+    <p>The API returns appropriate <a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes">HTTP status codes</a>. In addition, the API also includes error information in the response body. Error responses have a single <code>error</code> property that is a string describing the error, e.g.:</p>
+
+    <blockquote>
+      <p><code>{"error":"forbidden"}</code></p>
+    </blockquote>
+
+    <p>An additional <code>details</code> property is sometimes available for further diagnostics.</p>
+
+    <p>Possible error codes are:</p>
+    <ul>
+      <li><code>not-found</code> - Unrecognized/missing anime/manga ID.</li>
+      <li><code>ARG-required</code> - The HTTP argument <code>ARG</code> is required for this request, e.g., <code>anime_id-required</code>.</li>
+      <li><code>network-error</code> - A network error has occurred connecting to MyAnimeList.</li>
+      <li><code>unauthorized</code> - The request requires <a href="#authentication">authentication</a>.</li>
+      <li><code>forbidden</code> - User does not have access.</li>
+    </ul>
+  </div>
+
+
+  <h2 id="read_methods">Reading data from MyAnimeList</h2>
+
+  <div class="section">
+    <h3 id="read_profile">/profile - Read a user's profile</h3>
+
+    <p>Fetch the MAL profile for the username:</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/profile/<strong>username</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/profile/xinil">http://umal-api.coreyjustinroberts.com/profile/xinil</a></p>
+    </blockquote>
+
+    <p>The response is an <a href="#type_user">user</a>.</p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_anime_list">/animelist - Read an anime list</h3>
+
+    <p>Fetch an anime list with the given username:</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/animelist/<strong>username</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/animelist/xinil">http://umal-api.coreyjustinroberts.com/animelist/xinil</a></p>
+    </blockquote>
+
+    <p>The response is an <a href="#type_anime_list">anime list</a>.</p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_anime">/anime - Read an anime's details</h3>
+
+    <p>Fetch an anime with the given anime id:</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/anime/<strong>anime_id</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/anime/1887">http://umal-api.coreyjustinroberts.com/anime/1887</a></p>
+    </blockquote>
+
+    <p>The response is an <a href="#type_anime">anime</a>.</p>
+
+    <p>The following optional parameters are supported:</p>
+    <ul>
+      <li><code>mine=1</code> - If specified, include the authenticated user's anime details (e.g. user's score, watched status, watched episodes). Requires <a href="#authentication">authentication</a>. See <a href="#type_anime">anime response type</a>.</li>
+    </ul>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_history">/history - Read a user's history</h3>
+
+    <p class="warn"><strong>NOT YET IMPLEMENTED</strong></p>
+
+    <p>Fetch the history of a user with the given username.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/history/<strong>username</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/history/xinil">http://umal-api.coreyjustinroberts.com/history/xinil</a></p>
+    </blockquote>
+
+    <p>The response is a list of anime and/or manga IDs together with the episode/chapter watched or read, and the time it was watched or read.</p>
+
+    <p>TODO Give an example of the response format.</p>
+
+    <h4>Anime-only and manga-only history</h4>
+    <p>To get <em>only</em> the user's <strong>anime</strong> history, use the <code>http://umal-api.coreyjustinroberts.com/history/<strong>username</strong>/anime</code></p>
+
+    <p>To get <em>only</em> the user's <strong>manga</strong> history, use the <code>http://umal-api.coreyjustinroberts.com/history/<strong>username</strong>/manga</code></p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_search_anime">/anime/search - Search anime</h3>
+
+    <p>Search for anime matching a query.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/anime/search?q=<strong>query</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/anime/search?q=haruhi">http://umal-api.coreyjustinroberts.com/anime/search?q=haruhi</a></p>
+    </blockquote>
+
+    <p>Only 1 required parameter is supported:</p>
+    <ul>
+      <li><code>q</code> - The query (URL encoded).</li>
+    </ul>
+
+    <p>The response is a list of <a href="#type_anime">anime</a>. Only the following anime properties are available: <code>id</code>, <code>title</code>, <code>episodes</code>, <code>type</code>, <code>synopsis</code>, <code>image_url</code>, <code>members_score</code>, <code>start_date</code>, <code>end_date</code>, <code>classification</code></p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_top_anime">/anime/top - Read the top anime</h3>
+
+    <p>Fetch the top ranking anime.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/anime/top</code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/anime/top?page=1&amp;per_page=30">http://umal-api.coreyjustinroberts.com/anime/top?page=1&amp;per_page=30</a></p>
+    </blockquote>
+
+    <p>The following optional parameters are supported:</p>
+    <ul>
+      <li><code>type</code> - Type of anime to return. Possible values: <code>tv</code>, <code>movie</code>, <code>ova</code>, <code>special</code>. Defaults to nothing, which returns top anime of any type.</li>
+      <li><code>page</code> - Page of top anime to return. Defaults to 1, i.e. the 1st page.</li>
+      <li><code>per_page</code> - Number of anime to return per page. Defaults to 30. <span class="warn"><strong>NOT YET IMPLEMENTED</strong></span></li>
+    </ul>
+
+    <p>The response is a list of <a href="#type_anime">anime</a>. Only the following anime properties are available: <code>id</code>, <code>title</code>, <code>episodes</code>, <code>type</code>, <code>image_url</code>, <code>members_count</code>, <code>members_score</code></p>
+
+    <h4>How are the top anime determined?</h4>
+
+    <p>To quote <a href="http://myanimelist.net/info.php?go=topanime">MyAnimeList</a>:</p>
+    <blockquote>
+      <p><code>Weighted Rank (WR) = (v / (v + m)) * S + (m / (v + m)) * C</code></p>
+      <p><code>S</code> = Average score for the Anime (mean).<br />
+      <code>v</code> = Number of votes for the Anime = (Number of people scoring the Anime).<br />
+      <code>m</code> = Minimum votes/scores required to get a calculated score (currently 50 scores required).<br />
+      <code>C</code> = The mean score across the entire Anime DB.</p>
+    </blockquote>
+
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_popular_anime">/anime/popular - Read the popular anime</h3>
+
+    <p>Fetch the most popular anime. The popularity of an anime is determined by the number of MyAnimeList members watching it.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/anime/popular</code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/anime/popular?page=1&amp;per_page=30">http://umal-api.coreyjustinroberts.com/anime/popular?page=1&amp;per_page=30</a></p>
+    </blockquote>
+
+    <p>The following optional parameters are supported:</p>
+    <ul>
+      <li><code>page</code> - Page of anime to return. Defaults to 1, i.e. the 1st page.</li>
+      <li><code>per_page</code> - Number of anime to return per page. Defaults to 30. <span class="warn"><strong>NOT YET IMPLEMENTED</strong></span></li>
+    </ul>
+
+    <p>The response is a list of <a href="#type_anime">anime</a>. Only the following anime properties are available: <code>id</code>, <code>title</code>, <code>episodes</code>, <code>type</code>, <code>image_url</code>, <code>members_count</code>, <code>score</code></p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_upcoming_anime">/anime/upcoming - Read the upcoming anime</h3>
+
+    <p>Fetch the upcoming anime. This is a list of anime sorted by airing date.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/anime/upcoming</code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/anime/upcoming?start_date=20090815">http://umal-api.coreyjustinroberts.com/anime/upcoming?start_date=20090815</a></p>
+    </blockquote>
+
+    <p>The following optional parameters are supported:</p>
+    <ul>
+      <li><code>start_date</code> - Only anime which air after this date (in <code>YYYYMMDD</code> format) are returned. Defaults to the current date in UTC.</li>
+      <li><code>page</code> - Page of anime to return. Defaults to 1, i.e. the 1st page.</li>
+      <li><code>per_page</code> - Number of anime to return per page. Defaults to 20. <span class="warn"><strong>NOT YET IMPLEMENTED</strong></span></li>
+    </ul>
+
+    <p>The response is a list of <a href="#type_anime">anime</a>. Only the following anime properties are available: <code>id</code>, <code>title</code>, <code>episodes</code>, <code>type</code>, <code>synopsis</code>, <code>image_url</code>, <code>members_score</code>, <code>start_date</code>, <code>end_date</code>, <code>classification</code></p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_just_added_anime">/anime/just_added - Read the anime that have just been added to MyAnimeList</h3>
+
+    <p>Fetch anime that have just been added to the MyAnimeList database. The anime are sorted with the most recently added ones in front.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/anime/just_added</code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/anime/just_added?page=1&amp;per_page=30">http://umal-api.coreyjustinroberts.com/anime/just_added?page=1&amp;per_page=30</a></p>
+    </blockquote>
+
+    <p>The following optional parameters are supported:</p>
+    <ul>
+      <li><code>page</code> - Page of anime to return. Defaults to 1, i.e. the 1st page.</li>
+      <li><code>per_page</code> - Number of anime to return per page. Defaults to 20. <span class="warn"><strong>NOT YET IMPLEMENTED</strong></span></li>
+    </ul>
+
+    <p>The response is a list of <a href="#type_anime">anime</a>. Only the following anime properties are available: <code>id</code>, <code>title</code>, <code>episodes</code>, <code>type</code>, <code>synopsis</code>, <code>image_url</code>, <code>members_score</code>, <code>start_date</code>, <code>end_date</code>, <code>classification</code></p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_manga_list">/mangalist - Read a manga list</h3>
+
+    <p>Fetch a manga list with the given username:</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/mangalist/<strong>username</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/mangalist/xinil">http://umal-api.coreyjustinroberts.com/mangalist/xinil</a></p>
+    </blockquote>
+
+    <p>The response is a <a href="#type_manga_list">manga list</a>.</p>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_manga">/manga - Read a manga's details</h3>
+
+    <p>Retrieve details for the manga with the given manga id:</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/manga/<strong>manga_id</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/manga/104">http://umal-api.coreyjustinroberts.com/manga/104</a></p>
+    </blockquote>
+
+    <p>The response is an <a href="#type_manga">manga</a>.</p>
+
+    <p>The following optional parameters are supported:</p>
+    <ul>
+      <li><code>mine=1</code> - If specified, include the authenticated user's manga details (e.g. user's score, chapters read, volumes read). Requires <a href="#authentication">authentication</a>. See <a href="#type_manga">manga response type</a>.</li>
+    </ul>
+  </div>
+
+
+  <div class="section">
+    <h3 id="read_search_manga">/manga/search - Search manga</h3>
+
+    <p>Search for manga matching a query.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/manga/search?q=<strong>query</strong></code></p>
+
+      <p>Example: <a href="http://umal-api.coreyjustinroberts.com/manga/search?q=berserk">http://umal-api.coreyjustinroberts.com/manga/search?q=berserk</a></p>
+    </blockquote>
+
+    <p>Only 1 required parameter is supported:</p>
+    <ul>
+      <li><code>q</code> - The query (URL encoded).</li>
+    </ul>
+
+    <p>The response is a list of <a href="#type_manga">manga</a>. Only the following manga properties are available: <code>id</code>, <code>title</code>, <code>chapters</code>, <code>volumes</code>, <code>type</code>, <code>synopsis</code>, <code>image_url</code>, <code>members_score</code></p>
+  </div>
+
+
+  <h2 id="write_methods">Writing data to MyAnimeList</h2>
+
+  <p>All write methods require <a href="#authenticated">authentication</a>.</p>
+
+
+  <div class="section">
+    <h3 id="write_add_anime">/animelist/anime - Add anime to anime list</h3>
+
+    <p>Adds an anime to a user's anime list:</p>
+
+    <blockquote>
+      <p><code>POST http://umal-api.coreyjustinroberts.com/animelist/anime</code></p>
+    </blockquote>
+
+    <p><strong>Parameters</strong>:</p>
+    <ul>
+      <li><code>anime_id</code> - <strong>required</strong> - ID of anime to add to user's animelist.</li>
+      <li><code>status</code> - Integer or string representing user's watched status of the anime. Possible values: 1/"watching", 2/"completed", 3/"on-hold"/"onhold", 4/"dropped", 6/"plan to watch"/"plantowatch". Default: 1/"watching"</li>
+      <li><code>episodes</code> - Number of episodes watched. Default: 0</li>
+      <li><code>score</code> - User's score for an anime. An integer from 1 to 10.</li>
+    </ul>
+
+    <p>Example:</p>
+    <blockquote>
+      <p><code>POST http://umal-api.coreyjustinroberts.com/animelist/anime</code></p>
+      <pre>Request body:
+  <code>anime_id=1887
+  status=watching
+  episodes=1
+  score=9</code></pre>
+    </blockquote>
+  </div>
+
+
+  <div class="section">
+    <h3 id="write_update_anime">/animelist/anime/<strong>anime_id</strong> - Update an anime on user's anime list</h3>
+
+    <p>Updates an anime already on a user's anime list:</p>
+
+    <blockquote>
+      <p><code>PUT http://umal-api.coreyjustinroberts.com/animelist/anime/<strong>anime_id</strong></code></p>
+    </blockquote>
+
+    <p><strong>Parameters</strong>:</p>
+    <ul>
+      <li><code>status</code> - Integer or string representing user's watched status of the anime. Possible values: 1/"watching", 2/"completed", 3/"on-hold"/"onhold", 4/"dropped", 6/"plan to watch"/"plantowatch". Default: 1/"watching"</li>
+      <li><code>episodes</code> - Number of episodes watched. Default: 0</li>
+      <li><code>score</code> - User's score for an anime. An integer from 1 to 10.</li>
+    </ul>
+
+    <p>Example:</p>
+    <blockquote>
+      <p><code>PUT http://umal-api.coreyjustinroberts.com/animelist/anime/1887</code></p>
+      <pre>Request body:
+  <code>status=completed
+  episodes=24
+  score=10</code></pre>
+    </blockquote>
+  </div>
+
+
+  <div class="section">
+    <h3 id="write_delete_anime">/animelist/anime/<strong>anime_id</strong> - Delete an anime from user's anime list</h3>
+
+    <p>Delete an anime from a user's anime list. This removes any record of the anime from a user's anime list and cannot be undone.</p>
+
+    <blockquote>
+      <code>DELETE http://umal-api.coreyjustinroberts.com/animelist/anime/<strong>anime_id</strong></code>
+    </blockquote>
+
+    <p><strong>Parameters</strong>: none.</p>
+
+    <p><strong>Returns</strong>: HTTP 200 OK and the original <a href="#type_anime">anime</a> (this is useful for undoing a delete) if the anime was successfully deleted from animelist. Otherwise, returns appropriate HTTP response code and an <a href="#errors">error message</a>.</p>
+
+    <p>Example:</p>
+    <blockquote>
+      <p><code>DELETE http://umal-api.coreyjustinroberts.com/animelist/anime/1887</code></p>
+    </blockquote>
+  </div>
+
+
+  <div class="section">
+    <h3 id="write_add_manga">/mangalist/manga - Add manga to manga list</h3>
+
+    <p>Adds a manga to a user's manga list:</p>
+
+    <blockquote>
+      <p><code>POST http://umal-api.coreyjustinroberts.com/mangalist/manga</code></p>
+    </blockquote>
+
+    <p><strong>Parameters</strong>:</p>
+    <ul>
+      <li><code>manga_id</code> - <strong>required</strong> - ID of manga to add to user's mangalist.</li>
+      <li><code>status</code> - Integer or string representing user's watched status of the manga. Possible values: 1/"reading", 2/"completed", 3/"on-hold"/"onhold", 4/"dropped", 6/"plan to read"/"plantoread". Default: 1/"reading"</li>
+      <li><code>chapters</code> - Number of chapters read. Default: 0</li>
+      <li><code>volumes</code> - Number of volumes read. Default: 0</li>
+      <li><code>score</code> - User's score for an manga. An integer from 1 to 10.</li>
+    </ul>
+
+    <p>Example:</p>
+    <blockquote>
+      <p><code>POST http://umal-api.coreyjustinroberts.com/mangalist/manga</code></p>
+      <pre>Request body:
+  <code>manga_id=1887
+  status=watching
+  chapters=12
+  score=9</code></pre>
+    </blockquote>
+  </div>
+
+
+  <div class="section">
+    <h3 id="write_update_manga">/mangalist/manga/<strong>manga_id</strong> - Update a manga on user's manga list</h3>
+
+    <p>Updates a manga already on a user's manga list:</p>
+
+    <blockquote>
+      <p><code>PUT http://umal-api.coreyjustinroberts.com/mangalist/manga/<strong>manga_id</strong></code></p>
+    </blockquote>
+
+    <p><strong>Parameters</strong>:</p>
+    <ul>
+      <li><code>status</code> - Integer or string representing user's watched status of the manga. Possible values: 1/"reading", 2/"completed", 3/"on-hold"/"onhold", 4/"dropped", 6/"plan to read"/"plantoread". Default: 1/"reading"</li>
+      <li><code>chapters</code> - Number of chapters read. Default: 0</li>
+      <li><code>volumes</code> - Number of volumes read. Default: 0</li>
+      <li><code>score</code> - User's score for an manga. An integer from 1 to 10.</li>
+    </ul>
+
+    <p>Example:</p>
+    <blockquote>
+      <p><code>PUT http://umal-api.coreyjustinroberts.com/mangalist/manga/1887</code></p>
+      <pre>Request body:
+  <code>status=completed
+  chapters=24
+  score=10</code></pre>
+    </blockquote>
+  </div>
+
+
+  <div class="section">
+    <h3 id="write_delete_manga">/mangalist/manga/<strong>manga_id</strong> - Delete a manga from user's manga list</h3>
+
+    <p>Delete a manga from a user's manga list. This removes any record of the manga from a user's manga list and cannot be undone.</p>
+
+    <blockquote>
+      <code>DELETE http://umal-api.coreyjustinroberts.com/mangalist/manga/<strong>manga_id</strong></code>
+    </blockquote>
+
+    <p><strong>Parameters</strong>: none.</p>
+
+    <p><strong>Returns</strong>: HTTP 200 OK and the original <a href="#type_manga">manga</a> (this is useful for undoing a delete) if the manga was successfully deleted from mangalist. Otherwise, returns appropriate HTTP response code and an <a href="#errors">error message</a>.</p>
+
+    <p>Example:</p>
+    <blockquote>
+      <p><code>DELETE http://umal-api.coreyjustinroberts.com/mangalist/manga/1887</code></p>
+    </blockquote>
+  </div>
+
+
+  <h2 id="utility_methods">Utility methods</h2>
+
+
+  <div class="section">
+    <h3 id="verify_credentials">/account/verify_credentials - Test if user credentials are valid</h3>
+
+    <p>Test whether supplied user credentials are valid. The authentication mechanism is HTTP Basic Authentication. This method is rate-limited (the response status code will be HTTP 503 Service Temporarily Unavailable) because it can be a vector for brute force attacks.</p>
+
+    <blockquote>
+      <p><code>http://umal-api.coreyjustinroberts.com/account/verify_credentials</code></p>
+    </blockquote>
+
+    <p>The response is an HTTP 200 OK status code if authentication was successful. Otherwise, an HTTP 401 Unauthorized status code is returned.</p>
+  </div>
+
+
+</div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10171796-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>

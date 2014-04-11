@@ -1,0 +1,50 @@
+21 Feb 2013
+-----------
+* Added /profile/username API method - thanks to Peter Graham (https://github.com/6)!
+
+26 Jul 2012
+-----------
+* Added start_date and end_date to anime model.
+
+30 Apr 2012
+-----------
+* Added alternative_versions attribute to anime and manga models.
+
+29 Apr 2012
+-----------
+* Added these Related Anime attributes to anime:
+  * character_anime
+  * spin_offs
+  * summaries
+  * parent_story
+
+11 Feb 2011
+-----------
+* Added support for a callback parameter for JSON responses.
+
+13 April 2010
+-------------
+* Added the following manga API methods - thanks to Guillaume Cassonnet (gcassonnet):
+  * /mangalist - Read a manga list.
+  * /mangalist/manga/manga_id - Add, update or delete a manga in a user's manga list.
+  * /manga/search - Search for manga.
+
+3 January 2010
+--------------
+* Added API method /manga/manga_id for retrieving details of a single manga.
+* The anime "episodes" attribute now returns null (for JSON format responses) or an empty
+  <episodes> tag in cases where the number of episodes is "Unknown" on MyAnimeList.net.
+
+13 September 2009
+-----------------
+* Added support for XML output. Send along the "format=xml" parameter in your requests.
+
+8 September 2009
+----------------
+* Fix /anime/search return 500 errors with some queries. Supplemented official
+  API's search method (which was returning badly encoded Japanese characters)
+  with scraping MyAnimeList for synopsis.
+
+1 September 2009
+----------------
+* Developer preview release via http://myanimelist.net/clubs.php?cid=14973.
