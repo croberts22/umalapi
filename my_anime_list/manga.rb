@@ -541,7 +541,7 @@ module MyAnimeList
           related_anime_text = match_data[1]
 
           if related_anime_text.match %r{Adaptation: ?(<a .+?)<br}
-            $1.scan(%r{<a href="(http://myanimelist.net/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
+            $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
               manga.anime_adaptations << {
                 :anime_id => anime_id,
                 :title => title,
@@ -551,7 +551,7 @@ module MyAnimeList
           end
 
           if related_anime_text.match %r{.+: ?(<a .+?)<br}
-            $1.scan(%r{<a href="(http://myanimelist.net/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
               manga.related_manga << {
                 :manga_id => manga_id,
                 :title => title,
@@ -561,7 +561,7 @@ module MyAnimeList
           end
 
           if related_anime_text.match %r{Alternative versions?: ?(<a .+?)<br}
-            $1.scan(%r{<a href="(http://myanimelist.net/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
               manga.alternative_versions << {
                 :manga_id => manga_id,
                 :title => title,
