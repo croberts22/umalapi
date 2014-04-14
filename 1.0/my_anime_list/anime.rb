@@ -632,12 +632,13 @@ module MyAnimeList
               image_url = td.at('img/@src').to_s
               image_url.slice!(image_url.length-5)
 
-              id = character_url[%r{http://myanimelist.net/character/(\d+)/.*?}, 1].to_s
+              id = character_url[%r{/character/(\d+)/.*?}, 1].to_s
 
               # puts 'Character URL: ' + character_url
               # puts 'Image URL: ' + image_url
 
               character_details[:name] = ''
+              character_details[:role] = ''
               character_details[:character_id] = id
               character_details[:url] = character_url
               character_details[:image_url] = image_url
@@ -646,10 +647,12 @@ module MyAnimeList
             # Name of Character
             if counter == 1
               character_name = td.at('a/text()').to_s
+              character_role = td.xpath('div/small/text()').to_s
 
               # puts 'Character name: ' + character_name
 
               character_details[:name] = character_name
+              character_details[:role] = character_role
             end
 
             # Voice actors for this character (embedded in its own table)
@@ -661,7 +664,7 @@ module MyAnimeList
                 actor_name = inner_tr.at('td[1]/a/text()').to_s
                 actor_name_url = inner_tr.at('td[1]/a/@href').to_s
                 actor_language = inner_tr.at('td[1]/small/text()').to_s
-                id = actor_name_url[%r{http://myanimelist.net/people/(\d+)/.*?}, 1].to_s
+                id = actor_name_url[%r{/people/(\d+)/.*?}, 1].to_s
 
                 # Actor's image URL
                 actor_image_url = inner_tr.xpath('td[2]').at('div/a/img/@src').to_s
@@ -669,12 +672,12 @@ module MyAnimeList
 
                 if actor_name.length > 0
                   voice_actor_details <<  {
-                                            :name       => actor_name,
-                                            :actor_id   => id,
-                                            :url        => actor_name_url,
-                                            :language   => actor_language,
-                                            :image_url  => actor_image_url
-                                          }
+                      name:       actor_name,
+                      actor_id:   id,
+                      url:        actor_name_url,
+                      language:   actor_language,
+                      image_url:  actor_image_url
+                  }
                 end
               }
 
