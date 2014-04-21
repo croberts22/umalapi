@@ -618,6 +618,12 @@ module MyAnimeList
           td_nodes = table.xpath('tr/td')
           # puts td_nodes
 
+          # If the node size is not 3, then we know this is probably pointing to the staff
+          # table at the bottom. Just ignore, since we require 3 td rows.
+          if td_nodes.size != 3 then
+            next
+          end
+
           counter = 0
 
           character_details = {}
