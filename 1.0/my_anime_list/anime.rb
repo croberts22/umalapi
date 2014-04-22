@@ -678,11 +678,11 @@ module MyAnimeList
 
                 if actor_name.length > 0
                   voice_actor_details <<  {
-                      name:       actor_name,
-                      actor_id:   id,
-                      url:        actor_name_url,
-                      language:   actor_language,
-                      image_url:  actor_image_url
+                      name      =>   actor_name,
+                      actor_id  =>   id,
+                      url       =>   actor_name_url,
+                      language  =>   actor_language,
+                      image_url =>   actor_image_url
                   }
                 end
               }
