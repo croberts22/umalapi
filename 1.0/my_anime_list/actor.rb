@@ -1,7 +1,7 @@
 module MyAnimeList
   class Actor
     attr_accessor :id, :name, :image_url, :favorited_count, :url
-    attr_writer :character, :anime, :roles
+    attr_writer :character, :anime, :roles, :info
 
     # Scrape actor details page on MyAnimeList.net.
     def self.scrape_actor(id)
@@ -101,6 +101,10 @@ module MyAnimeList
     end
 =end
 
+    def info
+      @info ||= {}
+    end
+
     def roles
       @roles ||= []
     end
@@ -110,6 +114,7 @@ module MyAnimeList
           :id => id,
           :name => name,
           :image_url => image_url,
+          :info => info,
           :favorited_count => favorited_count,
           :url => url,
           :roles => roles
@@ -207,6 +212,47 @@ module MyAnimeList
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
 
       actor.image_url = content.at('div/img/@src').to_s
+
+      # Move pointer to the inner area where this actor's bio lies.
+      content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
+
+      info = {}
+
+      # Given Name.
+      if (node = content.at('//span[text()="Given name:"]')) && node.next then
+        info[:given_name] = node.next.text.strip
+      end
+
+      if (node = content.at('//span[text()="Family name:"]')) && node.next then
+        info[:family_name] = node.next.text.strip
+      end
+
+      if (node = content.at('//span[text()="Birthday:"]')) && node.next then
+        info[:birthday] = node.next.text.strip
+      end
+
+      if (node = content.at('//span[text()="Website:"]')) && node.next then
+        info[:website] = node.next.next.text.strip
+      end
+
+      if (node = content.at('//span[text()="Member Favorites:"]')) && node.next then
+        actor.favorited_count = node.next.text.strip
+      end
+
+      if (node = content.at('//span[text()="More:"]').parent()) then
+
+        info[:extra_info] = []
+
+        while (node = node.next) do
+          line = node.text.to_s.strip
+          if !(line == '<br>' or line == '<br />' or line.length == 0) then
+            info[:extra_info] << line
+          end
+        end
+
+      end
+
+      actor.info = info
 
       # Animes that this actor has participated in.
       content = doc.xpath('//div[@id="content"]/table/tr/td[2]/table[1]')
