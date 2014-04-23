@@ -677,12 +677,12 @@ module MyAnimeList
                 actor_image_url.slice!(actor_image_url.length-5)
 
                 if actor_name.length > 0
-                  voice_actor_details <<  {
-                      name      =>   actor_name,
-                      actor_id  =>   id,
-                      url       =>   actor_name_url,
-                      language  =>   actor_language,
-                      image_url =>   actor_image_url
+                  voice_actor_details << {
+                      :name => actor_name,
+                      :actor_id => id,
+                      :url => actor_name_url,
+                      :language => actor_language,
+                      :image_url => actor_image_url
                   }
                 end
               }
