@@ -19,7 +19,10 @@ module MyAnimeList
       # Check for missing actor.
       raise MyAnimeList::NotFoundError.new("Actor with ID #{id} doesn't exist.", nil) if response =~ /Invalid ID provided/i
 
-      actor = parse_actor_response(response)
+      actor = Actor.new
+      actor.id = id.to_s
+
+      actor = parse_actor_response(response, actor)
 
       actor
 
@@ -196,11 +199,9 @@ module MyAnimeList
 
     private
 
-    def self.parse_actor_response(response)
+    def self.parse_actor_response(response, actor)
 
       doc = Nokogiri::HTML(response)
-
-      actor = Actor.new
 
       # Name of this actor.
       content = doc.xpath('//div[@id="contentWrapper"]')
@@ -232,7 +233,7 @@ module MyAnimeList
       end
 
       if (node = content.at('//span[text()="Website:"]')) && node.next then
-        info[:website] = node.next.next.text.strip
+        info[:website] = node.next.next['href'].to_s.strip
       end
 
       if (node = content.at('//span[text()="Member Favorites:"]')) && node.next then
