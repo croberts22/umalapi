@@ -645,7 +645,7 @@ module MyAnimeList
 
               character_details[:name] = ''
               character_details[:role] = ''
-              character_details[:character_id] = id
+              character_details[:id] = id
               character_details[:url] = character_url
               character_details[:image_url] = image_url
             end
@@ -679,7 +679,7 @@ module MyAnimeList
                 if actor_name.length > 0
                   voice_actor_details << {
                       :name => actor_name,
-                      :actor_id => id,
+                      :id => id,
                       :url => actor_name_url,
                       :language => actor_language,
                       :image_url => actor_image_url

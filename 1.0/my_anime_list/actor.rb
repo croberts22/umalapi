@@ -208,7 +208,6 @@ module MyAnimeList
 
       actor.name = content.at('h1/text()').to_s
 
-
       # Biography and image of this actor.
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
 

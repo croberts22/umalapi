@@ -20,6 +20,7 @@ module MyAnimeList
       raise MyAnimeList::NotFoundError.new("Character with ID #{id} doesn't exist.", nil) if response =~ /Invalid ID provided/i
 
       character = parse_character_response(response)
+      character.id = id.to_s
 
       character
 
@@ -75,7 +76,6 @@ module MyAnimeList
       content = doc.xpath('//div[@id="contentWrapper"]')
 
       character.name = content.at('h1/text()').to_s
-
 
       # Image and anime/manga appearances.
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
@@ -141,11 +141,34 @@ module MyAnimeList
         character.manga << manga
       end
 
-      if (node = content.at('//td[text()="Member Favorites:"]')) && node.next then
-        info[:birthday] = node.next.text.strip
+     # if (node = content.at('//td[text()="Member Favorites:"]')) && node.next then
+     #   character.favorited_count = node.next.text.strip
+     # end
+
+      # Biography.
+
+      if (node = content.at('//div[@id="content"]/table/tr/td[2]/div[2]')) then
+
+        info[:biography] = ''
+
+        while (node = node.next) do
+          line = node.text.to_s.strip
+
+          break if (line == 'Voice Actors')
+
+          if (node.to_s == '<br>' or node.to_s == '<br />') then
+            info[:biography] << "\n"
+          elsif !(line.length == 0) then
+            info[:biography] << line
+          end
+        end
+
       end
 
+      info[:biography] = info[:biography].chomp()
+
       character.info = info
+
       character
 
     end
