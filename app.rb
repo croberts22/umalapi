@@ -593,6 +593,22 @@ class App < Sinatra::Base
 
   end
 
+  # GET /#{API_VERSION}/character/#{actor_id}
+  # Get a character's details.
+  get '/:v/character/:id' do
+    pass unless params[:id] =~ /^\d+$/
+
+    character = MyAnimeList::Character.scrape_character(params[:id])
+
+    # Caching.
+    expires 3600, :public, :must_revalidate
+    last_modified Time.now
+    etag "character/#{character.id}"
+
+    params[:callback].nil? ? character.to_json : "#{params[:callback]}(#{character.to_json})"
+
+  end
+
   # Verify that authentication credentials are valid.
   # Returns an HTTP 200 OK response if authentication was successful, or an HTTP 401 response.
   # FIXME This should be rate-limited to avoid brute-force attacks.
