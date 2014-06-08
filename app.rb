@@ -11,7 +11,7 @@ require './my_anime_list'
 
 class App < Sinatra::Base
 
-  API_VERSION = '1.0'
+  API_VERSION = '1.1'
 
   configure do
     enable :sessions, :static, :methodoverride
@@ -109,7 +109,7 @@ class App < Sinatra::Base
   before do
 
     # Check and make sure the version is set to API_VERSION.
-    raise MyAnimeList::NotFoundError.new('Malformed URL.', nil) unless Pathname(request.env['REQUEST_URI']).to_s.match(API_VERSION)
+      raise MyAnimeList::NotFoundError.new('Malformed URL.', nil) unless Pathname(request.env['REQUEST_URI']).to_s.match(API_VERSION)
 
     case params[:format]
     when 'xml'
@@ -577,6 +577,37 @@ class App < Sinatra::Base
     end
   end
 
+  # GET /#{API_VERSION}/actor/#{actor_id}
+  # Get an actor's details.
+  get '/:v/actor/:id' do
+    pass unless params[:id] =~ /^\d+$/
+
+    actor = MyAnimeList::Actor.scrape_actor(params[:id])
+
+    # Caching.
+    expires 3600, :public, :must_revalidate
+    last_modified Time.now
+    etag "actor/#{actor.id}"
+
+    params[:callback].nil? ? actor.to_json : "#{params[:callback]}(#{actor.to_json})"
+
+  end
+
+  # GET /#{API_VERSION}/character/#{actor_id}
+  # Get a character's details.
+  get '/:v/character/:id' do
+    pass unless params[:id] =~ /^\d+$/
+
+    character = MyAnimeList::Character.scrape_character(params[:id])
+
+    # Caching.
+    expires 3600, :public, :must_revalidate
+    last_modified Time.now
+    etag "character/#{character.id}"
+
+    params[:callback].nil? ? character.to_json : "#{params[:callback]}(#{character.to_json})"
+
+  end
 
   # Verify that authentication credentials are valid.
   # Returns an HTTP 200 OK response if authentication was successful, or an HTTP 401 response.
