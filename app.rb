@@ -11,6 +11,7 @@ require './my_anime_list'
 
 class App < Sinatra::Base
 
+  LAST_API_VERSION = '1.0'
   API_VERSION = '1.1'
 
   configure do
@@ -109,7 +110,7 @@ class App < Sinatra::Base
   before do
 
     # Check and make sure the version is set to API_VERSION.
-      raise MyAnimeList::NotFoundError.new('Malformed URL.', nil) unless Pathname(request.env['REQUEST_URI']).to_s.match(API_VERSION)
+      raise MyAnimeList::NotFoundError.new('Malformed URL.', nil) unless ( Pathname(request.env['REQUEST_URI']).to_s.match(API_VERSION) or Pathname(request.env['REQUEST_URI']).to_s.match(LAST_API_VERSION) )
 
     case params[:format]
     when 'xml'
