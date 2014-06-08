@@ -11,7 +11,7 @@ require './my_anime_list'
 
 class App < Sinatra::Base
 
-  API_VERSION = '1.0'
+  API_VERSION = '1.1'
 
   configure do
     enable :sessions, :static, :methodoverride
