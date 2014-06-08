@@ -1,12 +1,12 @@
 require 'curb'
 require 'nokogiri'
 
-require './my_anime_list/rack'
-require './my_anime_list/user'
-require './my_anime_list/anime'
-require './my_anime_list/anime_list'
-require './my_anime_list/manga'
-require './my_anime_list/manga_list'
+require './1.0/my_anime_list/rack'
+require './1.0/my_anime_list/user'
+require './1.0/my_anime_list/anime'
+require './1.0/my_anime_list/anime_list'
+require './1.0/my_anime_list/manga'
+require './1.0/my_anime_list/manga_list'
 
 module MyAnimeList
 
