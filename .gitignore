@@ -41,3 +41,4 @@ vendor/bundle
 bin
 
 config.ru
+config.ru.sample
