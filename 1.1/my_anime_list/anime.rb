@@ -1077,9 +1077,39 @@ module MyAnimeList
               end
             end
 
-            if related_anime_text.match %r{Alternative versions?: ?(<a .+?)<br}
+            if related_anime_text.match %r{Alternative version?: ?(<a .+?)<br}
               $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
                 anime.alternative_versions << {
+                  :anime_id => anime_id,
+                  :title => title,
+                  :url => url
+                }
+              end
+            end
+			
+			if related_anime_text.match %r{Alternative setting: ?(<a .+?)<br}
+              $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
+                anime.summaries << {
+                  :anime_id => anime_id,
+                  :title => title,
+                  :url => url
+                }
+              end
+            end
+			
+			if related_anime_text.match %r{Full story: ?(<a .+?)<br}
+              $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
+                anime.summaries << {
+                  :anime_id => anime_id,
+                  :title => title,
+                  :url => url
+                }
+              end
+            end
+			
+			if related_anime_text.match %r{Other: ?(<a .+?)<br}
+              $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
+                anime.summaries << {
                   :anime_id => anime_id,
                   :title => title,
                   :url => url
