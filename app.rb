@@ -135,17 +135,12 @@ class App < Sinatra::Base
       options = params[:options].split(',')
     end
 
-    if params[:mine] == '1'
-      authenticate unless session['cookie_string']
-      anime = MyAnimeList::Anime.scrape_anime(params[:id], options, session['cookie_string'])
-    else
-      anime = MyAnimeList::Anime.scrape_anime(params[:id], options)
+    anime = MyAnimeList::Anime.scrape_anime(params[:id], options)
 
-      # Caching.
-      expires 3600, :public, :must_revalidate
-      last_modified Time.now
-      etag "anime/#{anime.id}"
-    end
+    # Caching.
+    expires 3600, :public, :must_revalidate
+    last_modified Time.now
+    etag "anime/#{anime.id}"
 
     case params[:format]
     when 'xml'
@@ -412,17 +407,12 @@ class App < Sinatra::Base
   get '/:v/manga/:id' do
     pass unless params[:id] =~ /^\d+$/
 
-    if params[:mine] == '1'
-      authenticate unless session['cookie_string']
-      manga = MyAnimeList::Manga.scrape_manga(params[:id], session['cookie_string'])
-    else
-      manga = MyAnimeList::Manga.scrape_manga(params[:id])
+    manga = MyAnimeList::Manga.scrape_manga(params[:id])
 
-      # Caching.
-      expires 3600, :public, :must_revalidate
-      last_modified Time.now
-      etag "manga/#{manga.id}"
-    end
+    # Caching.
+    expires 3600, :public, :must_revalidate
+    last_modified Time.now
+    etag "manga/#{manga.id}"
 
     case params[:format]
     when 'xml'
