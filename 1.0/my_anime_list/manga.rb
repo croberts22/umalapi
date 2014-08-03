@@ -605,11 +605,11 @@ module MyAnimeList
         manga.read_status = selected_option['value']
       end
       chapters_node = doc.at('input#myinfo_chapters')
-      if chapters_node
+      if chapters_node and chapters_node['value'].length > 0
         manga.chapters_read = chapters_node['value'].to_i
       end
       volumes_node = doc.at('input#myinfo_volumes')
-      if volumes_node
+      if volumes_node and volumes_node['value'].length > 0
         manga.volumes_read = volumes_node['value'].to_i
       end
       score_select_node = doc.at('select#myinfo_score')
