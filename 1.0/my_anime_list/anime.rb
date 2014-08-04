@@ -1110,7 +1110,7 @@ module MyAnimeList
           anime.watched_status = selected_option['value']
         end
         episodes_input_node = doc.at('input#myinfo_watchedeps')
-        if episodes_input_node
+        if episodes_input_node and episodes_input_node['value'].length > 0
           anime.watched_episodes = episodes_input_node['value'].to_i
         end
         score_select_node = doc.at('select#myinfo_score')
