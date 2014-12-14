@@ -7,7 +7,7 @@ module MyAnimeList
     attr_reader :type, :status
     attr_writer :genres, :tags, :other_titles, :manga_adaptations, :prequels, :sequels, :side_stories,
                 :character_anime, :spin_offs, :summaries, :alternative_versions, :summary_stats, :score_stats, :additional_info_urls,
-                :character_voice_actors
+                :character_voice_actors, :alternative_settings, :full_stories, :others
 
     # These attributes are specific to a user-anime pair, probably should go into another model.
     attr_accessor :watched_episodes, :score
@@ -377,6 +377,18 @@ module MyAnimeList
       @character_voice_actors ||= []
     end
 
+	def alternative_settings
+		@alternative_settings ||= []
+	end
+	
+	def full_stories
+		@full_stories ||= []
+	end
+	
+	def others
+		@others ||= []
+	end
+	
     def attributes
       {
         :id => id,
@@ -413,7 +425,10 @@ module MyAnimeList
         :watched_episodes => watched_episodes,
         :score => score,
         :watched_status => watched_status,
-        :character_voice_actors => character_voice_actors
+        :character_voice_actors => character_voice_actors,
+		:alternative_settings => alternative_settings,
+		:full_stories => full_stories,
+		:others => others
       }
     end
 
@@ -531,6 +546,31 @@ module MyAnimeList
             xml.url       o[:url]
           end
         end
+		
+		alternative_settings do |o|
+			xml.alternative_setting do |xml|
+				xml.anime_id o[:anime_id]
+				xml.title	 o[:title]
+				xml.url		 o[:url]
+			end
+		end
+		
+		full_stories do |o|
+			xml.full_story do |xml|
+				xml.anime_id o[:anime_id]
+				xml.title	 o[:title]
+				xml.url 	 o[:url]
+			end
+		end
+		
+		others do |o|
+			xml.other do |xml|
+				xml.anime_id o[:anime_id]
+				xml.title 	 o[:title]
+				xml.url		 o[:url]
+			end
+		end
+		
       end
 
       xml.target!
@@ -1089,7 +1129,7 @@ module MyAnimeList
 			
 			if related_anime_text.match %r{Alternative setting: ?(<a .+?)<br}
               $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
-                anime.summaries << {
+                anime.alternative_settings << {
                   :anime_id => anime_id,
                   :title => title,
                   :url => url
@@ -1099,7 +1139,7 @@ module MyAnimeList
 			
 			if related_anime_text.match %r{Full story: ?(<a .+?)<br}
               $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
-                anime.summaries << {
+                anime.full_stories << {
                   :anime_id => anime_id,
                   :title => title,
                   :url => url
@@ -1109,14 +1149,15 @@ module MyAnimeList
 			
 			if related_anime_text.match %r{Other: ?(<a .+?)<br}
               $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
-                anime.summaries << {
+                anime.others << {
                   :anime_id => anime_id,
                   :title => title,
                   :url => url
                 }
               end
             end
-          end
+			
+		end
 
         end
 
