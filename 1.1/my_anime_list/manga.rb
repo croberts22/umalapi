@@ -14,6 +14,7 @@ module MyAnimeList
     def self.scrape_manga(id, cookie_string = nil)
       curl = Curl::Easy.new("http://myanimelist.net/manga/#{id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string if cookie_string
       begin
         curl.perform
@@ -70,6 +71,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new(url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string
       params = [
         Curl::PostField.content('mid', id),
@@ -105,6 +107,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new("http://myanimelist.net/panel.php?go=editmanga&id=#{manga.listed_manga_id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string
 
       begin

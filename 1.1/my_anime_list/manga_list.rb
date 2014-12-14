@@ -5,6 +5,7 @@ module MyAnimeList
     def self.manga_list_of(username)
       curl = Curl::Easy.new("http://myanimelist.net/malappinfo.php?u=#{username}&status=all&type=manga")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       begin
         curl.perform
       rescue Exception => e

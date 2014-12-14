@@ -22,6 +22,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new(history_url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       begin
         curl.perform
       rescue Exception => e
@@ -80,6 +81,7 @@ module MyAnimeList
       profile_url = "http://myanimelist.net/profile/#{username}"
       curl = Curl::Easy.new(profile_url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       begin
         curl.perform
       rescue Exception => e

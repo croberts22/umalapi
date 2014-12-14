@@ -26,6 +26,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new("http://myanimelist.net/anime/#{id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string if cookie_string
       begin
         curl.perform
@@ -126,6 +127,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new(url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string
       params = [
         Curl::PostField.content('aid', id),
@@ -160,6 +162,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new("http://myanimelist.net/panel.php?go=edit&id=#{anime.listed_anime_id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string
 
       begin
@@ -216,6 +219,7 @@ module MyAnimeList
 
       curl = Curl::Easy.new("http://myanimelist.net/topanime.php?type=#{type}&limit=#{limit}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
+      curl.interface = ENV['INTERFACE']
       begin
         curl.perform
       rescue Exception => e

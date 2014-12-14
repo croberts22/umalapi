@@ -24,6 +24,7 @@ module MyAnimeList
 
         curl = Curl::Easy.new('http://myanimelist.net/login.php')
         curl.headers['User-Agent'] = ENV['USER_AGENT']
+        curl.interface = ENV['INTERFACE']
 
         authenticated = false
         cookies = []
