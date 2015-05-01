@@ -966,8 +966,13 @@ module MyAnimeList
         if synopsis_h2
           node = synopsis_h2.next
           while node
+            if node['class'].eql? 'border_top'
+              node = nil
+              next
+            end
+
             if anime.synopsis
-              anime.synopsis << node.to_s
+              anime.synopsis << ' ' << Nokogiri::HTML(node.to_s).xpath('//text()').map(&:text).join(' ')
             else
               anime.synopsis = node.to_s
             end
