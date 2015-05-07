@@ -516,8 +516,13 @@ module MyAnimeList
       if synopsis_h2
         node = synopsis_h2.next
         while node
+          if node['class'].eql? 'border_top'
+            node = nil
+            next
+          end
+
           if manga.synopsis
-            manga.synopsis << node.to_s
+            manga.synopsis << ' ' << Nokogiri::HTML(node.to_s).xpath('//text()').map(&:text).join(' ')
           else
             manga.synopsis = node.to_s
           end
@@ -535,7 +540,7 @@ module MyAnimeList
       if related_manga_h2
 
         # Get all text between <h2>Related Manga</h2> and the next <h2> tag.
-        match_data = related_manga_h2.parent.to_s.match(%r{<h2>Related Manga</h2>(.+?)<h2>}m)
+        match_data = related_manga_h2.parent.to_s.match(%r{</div>Related Manga</h2>(.+?)<h2>}m)
 
         if match_data
           related_anime_text = match_data[1]

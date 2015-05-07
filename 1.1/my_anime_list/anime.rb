@@ -1041,7 +1041,7 @@ module MyAnimeList
         if related_anime_h2
 
           # Get all text between <h2>Related Anime</h2> and the next <h2> tag.
-          match_data = related_anime_h2.parent.to_s.match(%r{<h2>Related Anime</h2>(.+?)<h2>}m)
+          match_data = related_anime_h2.parent.to_s.match(%r{</div>Related Anime</h2>(.+?)<h2>}m)
 
           if match_data
             related_anime_text = match_data[1]
