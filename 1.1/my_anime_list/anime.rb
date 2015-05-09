@@ -210,11 +210,11 @@ module MyAnimeList
     #  * type - Type of anime to return. Possible values: tv, movie, ova, special, bypopularity. Defaults to nothing, which returns
     #           top anime of any type.
     #  * page - Page of top anime to return. Defaults to 1.
-    #  * per_page - Number of anime to return per page. Defaults to 30.
+    #  * per_page - Number of anime to return per page. Defaults to 50.
     def self.top(options = {})
 
       page = options[:page] || 1
-      limit = (page.to_i - 1) * 30
+      limit = (page.to_i - 1) * 50
       type = options[:type].to_s.downcase
 
       curl = Curl::Easy.new("http://myanimelist.net/topanime.php?type=#{type}&limit=#{limit}")
