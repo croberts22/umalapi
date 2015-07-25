@@ -569,13 +569,14 @@ module MyAnimeList
             next
           end
 
-          if manga.synopsis
-            manga.synopsis << ' ' << Nokogiri::HTML(node.to_s).xpath('//text()').map(&:text).join(' ')
+          if node.to_s.eql? '<br>' or node.to_s.eql? '<br />'
+            manga.synopsis << "\\n"
           else
-            manga.synopsis = node.to_s
+            manga.synopsis << '' << Nokogiri::HTML(node.to_s).xpath('//text()').map(&:text).join('')
           end
 
           node = node.next
+
         end
       end
 

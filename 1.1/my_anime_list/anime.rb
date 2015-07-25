@@ -393,6 +393,10 @@ module MyAnimeList
 		@others ||= []
 	end
 	
+    def synopsis
+      @synopsis ||= ''
+    end
+
     def attributes
       {
         :id => id,
@@ -971,13 +975,14 @@ module MyAnimeList
               next
             end
 
-            if anime.synopsis
-              anime.synopsis << ' ' << Nokogiri::HTML(node.to_s).xpath('//text()').map(&:text).join(' ')
+            if node.to_s.eql? '<br>' or node.to_s.eql? '<br />'
+              anime.synopsis << "\\n"
             else
-              anime.synopsis = node.to_s
+              anime.synopsis << '' << Nokogiri::HTML(node.to_s).xpath('//text()').map(&:text).join('')
             end
 
             node = node.next
+
           end
         end
 
