@@ -519,7 +519,7 @@ module MyAnimeList
       if synopsis_h2
         node = synopsis_h2.next
         while node
-          if node['class'].eql? 'border_top'
+          if node.name.eql? 'h2'
             node = nil
             next
           end
