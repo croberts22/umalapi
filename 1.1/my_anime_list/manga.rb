@@ -4,7 +4,8 @@ module MyAnimeList
                   :members_score, :members_count, :favorited_count, :synopsis
     attr_accessor :listed_manga_id
     attr_reader :type, :status
-    attr_writer :genres, :tags, :other_titles, :anime_adaptations, :related_manga, :alternative_versions
+    attr_writer :genres, :tags, :other_titles, :anime_adaptations, :related_manga, :alternative_versions,
+                :prequels, :sequels, :side_stories, :spin_offs, :summaries, :alternative_settings, :full_stories, :others
 
     # These attributes are specific to a user-manga pair.
     attr_accessor :volumes_read, :chapters_read, :score
@@ -274,6 +275,42 @@ module MyAnimeList
       @alternative_versions ||= []
     end
 
+    def prequels
+      @prequels ||= []
+    end
+
+    def sequels
+      @sequels ||= []
+    end
+
+    def side_stories
+      @side_stories ||= []
+    end
+
+    def spin_offs
+      @spin_offs ||= []
+    end
+
+    def summaries
+      @summaries ||= []
+    end
+
+    def alternative_settings
+      @alternative_settings ||= []
+    end
+
+    def full_stories
+      @full_stories ||= []
+    end
+
+    def others
+      @others ||= []
+    end
+
+    def synopsis
+      @synopsis ||= ''
+    end
+
     def attributes
       {
         :id => id,
@@ -299,7 +336,15 @@ module MyAnimeList
         :listed_manga_id => listed_manga_id,
         :chapters_read => chapters_read,
         :volumes_read => volumes_read,
-        :score => score
+        :score => score,
+        :side_stories => side_stories,
+        :prequels => prequels,
+        :sequels => sequels,
+        :spin_offs => spin_offs,
+        :summaries => summaries,
+        :alternative_settings => alternative_settings,
+        :full_stories => full_stories,
+        :others => others
       }
     end
 
@@ -546,9 +591,9 @@ module MyAnimeList
         match_data = related_manga_h2.parent.to_s.match(%r{</div>Related Manga</h2>(.+?)<h2>}m)
 
         if match_data
-          related_anime_text = match_data[1]
+          related_manga_text = match_data[1]
 
-          if related_anime_text.match %r{Adaptation: ?(<a .+?)<br}
+          if related_manga_text.match(/Adaptation:\<\/td\>(.+?)\<\/td\>/m)
             $1.scan(%r{<a href="(/anime/(\d+)/.*?)">(.+?)</a>}) do |url, anime_id, title|
               manga.anime_adaptations << {
                 :anime_id => anime_id,
@@ -558,25 +603,106 @@ module MyAnimeList
             end
           end
 
-          if related_anime_text.match %r{.+: ?(<a .+?)<br}
+          if related_manga_text.match(/Prequel:\<\/td\>(.+?)\<\/td\>/m)
             $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
-              manga.related_manga << {
-                :manga_id => manga_id,
-                :title => title,
-                :url => url
+              manga.prequels << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
               }
             end
           end
 
-          if related_anime_text.match %r{Alternative versions?: ?(<a .+?)<br}
+          if related_manga_text.match(/Sequel:\<\/td\>(.+?)\<\/td\>/m)
             $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
-              manga.alternative_versions << {
-                :manga_id => manga_id,
-                :title => title,
-                :url => url
+              manga.sequels << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
               }
             end
           end
+
+          if related_manga_text.match(/Side story:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.side_stories << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Parent story:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.parent_story = {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Spin-off:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.spin_offs << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Summary:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.summaries << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Alternative version?:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.alternative_versions << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Alternative setting:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.alternative_settings << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Full story:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.full_stories << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
+          if related_manga_text.match(/Other:\<\/td\>(.+?)\<\/td\>/m)
+            $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
+              manga.others << {
+                  :manga_id => manga_id,
+                  :title => title,
+                  :url => url
+              }
+            end
+          end
+
         end
       end
 
