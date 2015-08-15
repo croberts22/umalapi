@@ -836,8 +836,10 @@ module MyAnimeList
 
         # Title and rank.
         # Example:
-        # <h1><div style="float: right; font-size: 13px;">Ranked #96</div>Lucky ☆ Star</h1>
-        anime.title = doc.at(:h1).children.find { |o| o.text? }.to_s
+        # <h1>
+        #   <div style="float: right; font-size: 13px;">Ranked #96</div>
+        #   <span itemprop="name">Lucky☆Star</span>
+        anime.title = doc.at('h1 span').text
         anime.rank = doc.at('h1 > div').text.gsub(/\D/, '').to_i
 
         if image_node = doc.at('div#content tr td div img')

@@ -443,9 +443,9 @@ module MyAnimeList
       # Example:
       # <h1>
       #   <div style="float: right; font-size: 13px;">Ranked #8</div>Yotsuba&!
-      #   <span style="font-weight: normal;"><small>(Manga)</small></span>
+      #   <span itemprop="name">Lucky☆Star</span>
       # </h1>
-      manga.title = doc.at(:h1).children.find { |o| o.text? }.to_s.strip
+      manga.title = doc.at('h1 span').text
       manga.rank = doc.at('h1 > div').text.gsub(/\D/, '').to_i
 
       # Image URL.
