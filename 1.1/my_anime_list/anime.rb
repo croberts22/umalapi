@@ -918,17 +918,15 @@ module MyAnimeList
 
         # Statistics
         # Example:
-        # <h2>Statistics</h2>
-        # <div>
-        #   <span class="dark_text">Score:</span> 8.41<sup><small>1</small></sup>
-        #   <small>(scored by 22601 users)</small>
-        # </div>
-        # <div class="spaceit"><span class="dark_text">Ranked:</span> #96<sup><small>2</small></sup></div>
-        # <div><span class="dark_text">Popularity:</span> #15</div>
-        # <div class="spaceit"><span class="dark_text">Members:</span> 36,961</div>
-        # <div><span class="dark_text">Favorites:</span> 2,874</div>
-        if (node = left_column_nodeset.at('//span[text()="Score:"]')) && node.next
-          anime.members_score = node.next.text.strip.to_f
+        # <h2>Statistics</h2><span itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+        # <div><span class="dark_text">Score:</span> <span itemprop="ratingValue">7.94</span>
+        # <sup><small>1</small></sup> <small>(scored by <span itemprop="ratingCount">132515</span> users)</small></div><meta itemprop="bestRating" content="10"><meta itemprop="worstRating" content="1"></span>"
+        # <div class="spaceit"><span class="dark_text">Ranked:</span> #597<sup><small>2</small></sup></div>
+        # <div><span class="dark_text">Popularity:</span> #60</div>
+        # <div class="spaceit"><span class="dark_text">Members:</span> 240,938</div>
+        # <div><span class="dark_text">Favorites:</span> 7,286</div>
+        if (node = left_column_nodeset.at('//span[@itemprop="ratingValue"]'))
+          anime.members_score = node.text.strip.to_f
         end
         if (node = left_column_nodeset.at('//span[text()="Popularity:"]')) && node.next
           anime.popularity_rank = node.next.text.strip.sub('#', '').gsub(',', '').to_i
