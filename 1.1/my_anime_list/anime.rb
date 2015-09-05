@@ -958,7 +958,7 @@ module MyAnimeList
         # Extract from sections on the right column: Synopsis, Additional URLs, Related Anime, Characters & Voice Actors, Reviews
         # Recommendations.
         # -
-        right_column_nodeset = doc.xpath('//div[@id="content"]/table/tr/td/div/table')
+        right_column_nodeset = doc.xpath('//div[@id="content"]/table/tr/td/div')
 
         # Synopsis
         # Example:

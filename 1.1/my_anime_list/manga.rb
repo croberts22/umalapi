@@ -552,7 +552,7 @@ module MyAnimeList
       # -
       # Extract from sections on the right column: Synopsis, Related Manga
       # -
-      right_column_nodeset = doc.xpath('//div[@id="content"]/table/tr/td/div/table')
+      right_column_nodeset = doc.xpath('//div[@id="content"]/table/tr/td/div')
 
       # Synopsis
       # Example:
