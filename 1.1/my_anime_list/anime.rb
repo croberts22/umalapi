@@ -661,7 +661,7 @@ module MyAnimeList
         left_column_nodeset = doc.xpath('//div[@id="content"]/table/tr/td[@class="borderClass"]')
         # puts 'Number of tables: ' + doc.search('//div[@style="padding: 0 7px;"]/table').length.to_s
 
-        doc.search('//div[@style="padding: 0 7px;"]/table').each do |table|
+        doc.search('table').each do |table|
 
           td_nodes = table.xpath('tr/td')
           # puts td_nodes
