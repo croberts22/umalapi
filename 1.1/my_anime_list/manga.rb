@@ -735,26 +735,26 @@ module MyAnimeList
       #   </tr>
       #   </table>
       # </div>
-      read_status_select_node = doc.at('select#myinfo_status')
-      if read_status_select_node && (selected_option = read_status_select_node.at('option[selected="selected"]'))
-        manga.read_status = selected_option['value']
-      end
-      chapters_node = doc.at('input#myinfo_chapters')
-      if chapters_node and chapters_node['value'].length > 0
-        manga.chapters_read = chapters_node['value'].to_i
-      end
-      volumes_node = doc.at('input#myinfo_volumes')
-      if volumes_node and volumes_node['value'].length > 0
-        manga.volumes_read = volumes_node['value'].to_i
-      end
-      score_select_node = doc.at('select#myinfo_score')
-      if score_select_node && (selected_option = score_select_node.at('option[selected="selected"]'))
-        manga.score = selected_option['value'].to_i
-      end
-      listed_manga_id_node = doc.at('//a[text()="Edit Details"]')
-      if listed_manga_id_node
-        manga.listed_manga_id = listed_manga_id_node['href'].match('id=(\d+)')[1].to_i
-      end
+      #read_status_select_node = doc.at('select#myinfo_status')
+      #if read_status_select_node && (selected_option = read_status_select_node.at('option[selected="selected"]'))
+      #  manga.read_status = selected_option['value']
+      #end
+      #chapters_node = doc.at('input#myinfo_chapters')
+      #if chapters_node and chapters_node['value'].length > 0
+      #  manga.chapters_read = chapters_node['value'].to_i
+      #end
+      #volumes_node = doc.at('input#myinfo_volumes')
+      #if volumes_node and volumes_node['value'].length > 0
+      #  manga.volumes_read = volumes_node['value'].to_i
+      #end
+      #score_select_node = doc.at('select#myinfo_score')
+      #if score_select_node && (selected_option = score_select_node.at('option[selected="selected"]'))
+      #  manga.score = selected_option['value'].to_i
+      #end
+      #listed_manga_id_node = doc.at('//a[text()="Edit Details"]')
+      #if listed_manga_id_node
+      #  manga.listed_manga_id = listed_manga_id_node['href'].match('id=(\d+)')[1].to_i
+      #end
 
       manga
     end

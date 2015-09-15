@@ -1199,22 +1199,22 @@ module MyAnimeList
         #       <td><input type="button" name="myinfo_submit" value="Update" onclick="myinfo_updateInfo(1100070);" class="inputButton"> <small><a href="http://www.myanimelist.net/panel.php?go=edit&id=1100070">Edit Details</a></small></td>
         #     </tr>
         #   </table>
-        watched_status_select_node = doc.at('select#myinfo_status')
-        if watched_status_select_node && (selected_option = watched_status_select_node.at('option[selected="selected"]'))
-          anime.watched_status = selected_option['value']
-        end
-        episodes_input_node = doc.at('input#myinfo_watchedeps')
-        if episodes_input_node and episodes_input_node['value'].length > 0
-          anime.watched_episodes = episodes_input_node['value'].to_i
-        end
-        score_select_node = doc.at('select#myinfo_score')
-        if score_select_node && (selected_option = score_select_node.at('option[selected="selected"]'))
-          anime.score = selected_option['value'].to_i
-        end
-        listed_anime_id_node = doc.at('//a[text()="Edit Details"]')
-        if listed_anime_id_node
-          anime.listed_anime_id = listed_anime_id_node['href'].match('id=(\d+)')[1].to_i
-        end
+        #watched_status_select_node = doc.at('select#myinfo_status')
+        #if watched_status_select_node && (selected_option = watched_status_select_node.at('option[selected="selected"]'))
+        #  anime.watched_status = selected_option['value']
+        #end
+        #episodes_input_node = doc.at('input#myinfo_watchedeps')
+        #if episodes_input_node and episodes_input_node['value'].length > 0
+        #  anime.watched_episodes = episodes_input_node['value'].to_i
+        #end
+        #score_select_node = doc.at('select#myinfo_score')
+        #if score_select_node && (selected_option = score_select_node.at('option[selected="selected"]'))
+        #  anime.score = selected_option['value'].to_i
+        #end
+        #listed_anime_id_node = doc.at('//a[text()="Edit Details"]')
+        #if listed_anime_id_node
+        #  anime.listed_anime_id = listed_anime_id_node['href'].match('id=(\d+)')[1].to_i
+        #end
 
         anime
       end
