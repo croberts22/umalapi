@@ -446,7 +446,7 @@ module MyAnimeList
       #   <span itemprop="name">Lucky☆Star</span>
       # </h1>
       manga.title = doc.at('h1 span').text
-      manga.rank = doc.at('h1 > div').text.gsub(/\D/, '').to_i
+      manga.rank = doc.at('div[@id="contentWrapper"] > div').text.gsub(/\D/, '').to_i
 
       # Image URL.
       if image_node = doc.at('div#content tr td div img')
