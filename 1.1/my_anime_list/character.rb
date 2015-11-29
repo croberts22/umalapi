@@ -96,14 +96,10 @@ module MyAnimeList
 
         anime_image_url = tr.xpath('td[1]/div/a/img/@src').to_s
 
-        # Remove any letters preceding the extension (usually s or m are appended to get a smaller resolution image.)
-        directory = File.dirname(anime_image_url)
-        filename = File.basename(anime_image_url, '.*')
-        extension = File.extname(anime_image_url)
-
-        # If the filename does not have all digits, then we know we have letters.
-        if filename[/[0-9]+/] != filename and filename != 'questionmark_23' then
-          anime_image_url = directory + '/' + filename[/[0-9]+/] + extension
+        # umalapi-27: Update in MAL's html caused inaccessible image URLs.
+        unless anime_image_url.match(%r{questionmark}) then
+          anime_image_url = 'http://cdn.myanimelist.net' + anime_image_url.match(%r{/images/anime/.*.jpg}).to_s
+          anime[:image_url] = anime_image_url
         end
 
         anime_url = tr.xpath('td[2]/a/@href').to_s
@@ -123,14 +119,10 @@ module MyAnimeList
 
         manga_image_url = tr.xpath('td[1]/div/a/img/@src').to_s
 
-        # Remove any letters preceding the extension (usually s or m are appended to get a smaller resolution image.)
-        directory = File.dirname(manga_image_url)
-        filename = File.basename(manga_image_url, '.*')
-        extension = File.extname(manga_image_url)
-
-        # If the filename does not have all digits, then we know we have letters.
-        if filename[/[0-9]+/] != filename and filename != 'questionmark_23' then
-          manga_image_url = directory + '/' + filename[/[0-9]+/] + extension
+        # umalapi-27: Update in MAL's html caused inaccessible image URLs.
+        unless manga_image_url.match(%r{questionmark}) then
+          manga_image_url = 'http://cdn.myanimelist.net' + manga_image_url.match(%r{/images/manga/.*.jpg}).to_s
+          manga[:image_url] = manga_image_url
         end
 
         manga_url = tr.xpath('td[2]/a/@href').to_s

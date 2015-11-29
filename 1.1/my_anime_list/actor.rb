@@ -265,36 +265,27 @@ module MyAnimeList
 
         anime_image_url = tr.xpath('td[1]/div/a/img/@src').to_s
 
-        # Remove any letters preceding the extension (usually s or m are appended to get a smaller resolution image.)
-        directory = File.dirname(anime_image_url)
-        filename = File.basename(anime_image_url, '.*')
-        extension = File.extname(anime_image_url)
-
-        # If the filename does not have all digits, then we know we have letters.
-        if filename[/[0-9]+/] != filename and filename != 'questionmark_23' then
-          anime_image_url = directory + '/' + filename[/[0-9]+/] + extension
+        # umalapi-27: Update in MAL's html caused inaccessible image URLs.
+        unless anime_image_url.match(%r{questionmark}) then
+          anime_image_url = 'http://cdn.myanimelist.net' + anime_image_url.match(%r{/images/anime/.*.jpg}).to_s
+          anime[:image_url] = anime_image_url
         end
 
         anime_url = tr.xpath('td[2]/a/@href').to_s
-        anime[:image_url] = anime_image_url
+
         anime[:url] = anime_url
         anime[:name] = tr.xpath('td[2]/a/text()').to_s
         anime[:id] = anime_url[%r{/anime/(\d+)/.*?}, 1].to_s
 
         character_image_url = tr.xpath('td[4]/div/a/img/@src').to_s
 
-        # Remove any letters preceding the extension (usually s or m are appended to get a smaller resolution image.)
-        directory = File.dirname(character_image_url)
-        filename = File.basename(character_image_url, '.*')
-        extension = File.extname(character_image_url)
-
-        # If the filename does not have all digits, then we know we have letters.
-        if filename[/[0-9]+/] != filename and filename != 'questionmark_23' then
-          character_image_url = directory + '/' + filename[/[0-9]+/] + extension
+        # umalapi-27: Update in MAL's html caused inaccessible image URLs.
+        unless character_image_url.match(%r{questionmark}) then
+          character_image_url = 'http://cdn.myanimelist.net' + character_image_url.match(%r{/images/characters/.*.jpg}).to_s
+          character[:image_url] = character_image_url
         end
 
         character_url = tr.xpath('td[3]/a/@href').to_s
-        character[:image_url] = character_image_url
         character[:url] = character_url
         character[:name] = tr.xpath('td[3]/a/text()').to_s
         character[:id] = character_url[%r{/character/(\d+)/.*?}, 1].to_s
