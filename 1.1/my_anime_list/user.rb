@@ -92,15 +92,17 @@ module MyAnimeList
 
       doc = Nokogiri::HTML(response)
 
-      left_content = doc.at("#content .profile_leftcell")
-      avatar = left_content.at("#profileRows").previous_element.at("img")
+      left_content = doc.at('#content .content-container .container-left')
+      avatar = left_content.at('.user-profile .user-image img')
 
-      main_content = doc.at('#content #horiznav_nav').next_element
-      details, updates, anime_stats, manga_stats = main_content.search("> table table")
+      main_content = doc.at('#content .content-container .container-right')
+      #TODO: Fix
+      anime_stats = doc.css('div.stats.anime')
+      manga_stats = doc.css('div.stats.manga')
 
       {
         :avatar_url => avatar['src'],
-        :details => UserDetails.parse(details),
+        #:details => UserDetails.parse(details),
         :anime_stats => UserStats.parse(anime_stats),
         :manga_stats => UserStats.parse(manga_stats),
       }
@@ -150,10 +152,40 @@ module MyAnimeList
     class UserStats
       def self.parse(node)
         result = {}
-        node.search("tr").each do |tr|
-          label, value, _ = tr.search("td")
-          parameterized_label = label.text.downcase.gsub(/[\(\)]/, "").gsub(/\s+/, "_")
+
+        # Days, Mean Score
+        stats = node.css('div.stat-score')
+
+        stats.search('div').each do |stat_score|
+
+          # Label comes back as "Days: ", so we'll split off of the colon
+          # and take the first segment.
+          stat = stat_score.at('span')
+          parameterized_label = stat.text.split(':').first.downcase.gsub(/\s+/, '_')
+
+          # FIXME: This is to support legacy code. When bumping the version to 1.3, remove this.
+          if parameterized_label == 'days' then
+            parameterized_label = 'time_days'
+          end
+
+          value = stat.next
+
           result[parameterized_label] = value.text.to_f
+
+        end
+
+        # Plan to Watch, Dropped, etc.
+        node.search('ul').each do |tr|
+          tr.search('li').each do |item|
+
+            # Since the aggregated values vs. profile stats use a different element
+            # (a vs. span), we revert to invoking the child element vs. doing a
+            # search for an explicit element.
+            label = item.child
+            value = item.child.next
+            parameterized_label = label.text.downcase.gsub(/[\-]/, '_').gsub(/\s+/, '_')
+            result[parameterized_label] = value.text.to_f
+          end
         end
         result
       end
