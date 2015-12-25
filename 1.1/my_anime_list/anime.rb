@@ -841,10 +841,10 @@ module MyAnimeList
         # Title and rank.
         # Example:
         # <h1>
-        #   <div style="float: right; font-size: 13px;">Ranked #96</div>
+        #   <div style="float: right; font-size: 13px;"><span class="header-right">Ranked #2222</span></div>
         #   <span itemprop="name">Lucky☆Star</span>
         anime.title = doc.at('h1 span').text
-        anime.rank = doc.at('div[@id="contentWrapper"] > div').text.gsub(/\D/, '').to_i
+        anime.rank = doc.at('div[@id="contentWrapper"] > div > span').text.gsub(/\D/, '').to_i
 
         if image_node = doc.at('div#content tr td div img')
           anime.image_url = image_node['src']
