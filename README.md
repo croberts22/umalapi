@@ -1,5 +1,9 @@
-umalapi - The MyAnimeList Unofficial API
+umalapi - The MyAnimeList Unofficial API (PROJECT MOVED TO [RAILGUN](https://github.com/croberts22/railgun))
 ========================================
+
+**NOTE**: This project will soon no longer be supported. umalapi is undergoing an architectural overhaul and is being converted to [railgun](https://github.com/croberts22/railgun). To contribute to the unofficial API, please go there.
+
+---
 
 umalapi is an unofficial API for http://myanimelist.net/. This API is an extension to the [official API](http://myanimelist.net/modules.php?go=api), which extracts additional information from responses to bring the user more content to digest. Such content includes related works, ratings, tags, and genres. There's much more to come.
 
