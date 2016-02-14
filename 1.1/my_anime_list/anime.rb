@@ -253,6 +253,15 @@ module MyAnimeList
 
         anime[:members_score] = score.text.to_f
 
+        # I'm not really sure the cell is formatted this way, but, shrugs.jpg.
+        details = table_cell_nodes.at('div[@class=detail] div[@class="information di-ib mt4"]').children
+
+        match_data = details.first.text.strip.match %r{(.*) \(.*\)}
+        if !match_data.nil?
+          type = match_data[1].to_s
+          anime[:type] = type unless type.nil?
+        end
+
         # content_cell = table_cell_nodes.at('div[@class=detail]')
 
         # members_cell = content_cell.at('div[@class="information di-ib mt4"]')
