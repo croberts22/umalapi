@@ -215,7 +215,7 @@ module MyAnimeList
 
       page = options[:page] || 1
       limit = (page.to_i - 1) * 50
-      type = options[:type].to_s.downcase
+      type = options[:type].to_s.downcase || 'tv'
 
       curl = Curl::Easy.new("http://myanimelist.net/topanime.php?type=#{type}&limit=#{limit}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
@@ -232,38 +232,52 @@ module MyAnimeList
 
       results = []
 
-      doc.search('div#content table tr').each do |results_row|
-        anime_title_node = results_row.at('td a strong')
+      doc.search('div#content div table tr').each do |results_row|
+        anime_title_node = results_row.at('td div a/text()')
         next unless anime_title_node
         anime_url = anime_title_node.parent['href']
         next unless anime_url
         url_match = anime_url.match %r{/anime/(\d+)/?.*}
 
-        anime = Anime.new
+        # Not using the Anime object here, since lots of fields are unavailable.
+        # This will be fixed in railgun (https://github.com/croberts22/railgun/).
 
-        anime.id = url_match[1].to_s
-        anime.title = anime_title_node.text
+        anime = {}
+
+        anime[:id] = url_match[1].to_s
+        anime[:title] = anime_title_node.text
+        anime[:rank] = results_row.at('td span').text.to_i
 
         table_cell_nodes = results_row.search('td')
-        content_cell = table_cell_nodes.at('div.spaceit_pad')
+        score = table_cell_nodes.at('td div span')
 
-        members_cell = content_cell.at('span.lightLink')
-        members = members_cell.text.strip.gsub!(/\D/, '').to_i
-        members_cell.remove
+        anime[:members_score] = score.text.to_f
 
-        stats = content_cell.text.strip.split(',')
-        type = stats[0]
-        episodes = stats[1].gsub!(/\D/, '')
-        episodes = if episodes.size > 0 then episodes.to_i else nil end
-        members_score = stats[2].match(/\d+(\.\d+)?/).to_s.to_f
+        # content_cell = table_cell_nodes.at('div[@class=detail]')
 
-        anime.type = type
-        anime.episodes = episodes
-        anime.members_count = members
-        anime.members_score = members_score
+        # members_cell = content_cell.at('div[@class="information di-ib mt4"]')
+        # members = members_cell.text.strip.gsub!(/\D/, '').to_i
+        # members_cell.remove
+        #
+        # stats = content_cell.text.strip.split(',')
+        # type = stats[0]
+        # episodes = stats[1].gsub!(/\D/, '')
+        # episodes = if episodes.size > 0 then episodes.to_i else nil end
+        # members_score = stats[2].match(/\d+(\.\d+)?/).to_s.to_f
+
+        # anime.type = type
+        # anime.episodes = episodes
+        # anime.members_count = members
+        # anime.members_score = members_score
 
         if image_node = results_row.at('td a img')
-          anime.image_url = image_node['src']
+          image_url = image_node['src']
+
+          # If the URL has a t at the end of its filename, then we've received
+          # the tiny version of the image. Strip this.
+          image_url = image_url.gsub(/t.jpg/, '.jpg')
+
+          anime[:image_url] = image_url
         end
 
         results << anime
