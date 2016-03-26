@@ -493,8 +493,8 @@ module MyAnimeList
       # <div class="spaceit"><span class="dark_text">Serialization:</span>
       #   <a href="http://myanimelist.net/manga.php?mid=23">Dengeki Daioh (Monthly)</a>
       # </div>
-      if (node = left_column_nodeset.at('//span[text()="Type:"]')) && node.next
-        manga.type = node.next.text.strip
+      if (node = left_column_nodeset.at('//span[text()="Type:"]')) && node.next.next
+        manga.type = node.next.next.text.strip
       end
       if (node = left_column_nodeset.at('//span[text()="Volumes:"]')) && node.next
         manga.volumes = node.next.text.strip.gsub(',', '').to_i

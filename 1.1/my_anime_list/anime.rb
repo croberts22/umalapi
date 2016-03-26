@@ -919,8 +919,8 @@ module MyAnimeList
         # </div>
         # <div><span class="dark_text">Duration:</span> 24 min. per episode</div>
         # <div class="spaceit"><span class="dark_text">Rating:</span> PG-13 - Teens 13 or older</div>
-        if (node = left_column_nodeset.at('//span[text()="Type:"]')) && node.next
-          anime.type = node.next.text.strip
+        if (node = left_column_nodeset.at('//span[text()="Type:"]')) && node.next.next
+          anime.type = node.next.next.text.strip
         end
         if (node = left_column_nodeset.at('//span[text()="Episodes:"]')) && node.next
           anime.episodes = node.next.text.strip.gsub(',', '').to_i
@@ -975,7 +975,7 @@ module MyAnimeList
         #   <a href="http://myanimelist.net/anime.php?tag=slice of life" style="font-size: 18px" title="799 people tagged with slice of life">slice of life</a>
         # </span>
         if (node = left_column_nodeset.at('//span[preceding-sibling::h2[text()="Popular Tags"]]'))
-          node.search('a').each do |a|
+          node.search(' a').each do |a|
             anime.tags << a.text
           end
         end
