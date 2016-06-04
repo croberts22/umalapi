@@ -280,7 +280,7 @@ module MyAnimeList
         # anime.members_score = members_score
 
         if image_node = results_row.at('td a img')
-          image_url = image_node['src']
+          image_url = image_node['data-src']
 
           # If the URL has a t at the end of its filename, then we've received
           # the tiny version of the image. Strip this.
