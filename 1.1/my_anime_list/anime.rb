@@ -706,7 +706,7 @@ module MyAnimeList
             # Character URL and Image URL.
             if counter == 0
               character_url = td.at('a/@href').to_s
-              image_url = td.at('img/@src').to_s
+              image_url = td.at('img/@data-src').to_s
 
               # umalapi-27: Update in MAL's html caused inaccessible image URLs.
               image_url = 'http://cdn.myanimelist.net' + image_url.match(%r{/images/characters/.*.jpg}).to_s
