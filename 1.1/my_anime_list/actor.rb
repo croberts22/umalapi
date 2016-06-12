@@ -212,7 +212,7 @@ module MyAnimeList
       # Biography and image of this actor.
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
 
-      actor.image_url = content.at('div/img/@src').to_s
+      actor.image_url = content.at('div img/@src').to_s
 
       # Move pointer to the inner area where this actor's bio lies.
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')

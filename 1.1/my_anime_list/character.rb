@@ -81,7 +81,7 @@ module MyAnimeList
       # Image and anime/manga appearances.
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
 
-      character.image_url = content.at('div/img/@src').to_s
+      character.image_url = content.at('div img/@src').to_s
 
       # Move pointer to the inner area where this character's bio lies.
       content = doc.xpath('//div[@id="content"]/table/tr/td[1]')
