@@ -284,7 +284,8 @@ module MyAnimeList
 
           # If the URL has a t at the end of its filename, then we've received
           # the tiny version of the image. Strip this.
-          image_url = image_url.gsub(/t.jpg/, '.jpg')
+          # Also remove any custom resolutions, and any query params at the end.
+          image_url = image_url.gsub(/t.jpg/, '.jpg').gsub(/r\/\d+x\d+\//, '').gsub(/\?s=.*/, '')
 
           anime[:image_url] = image_url
         end
