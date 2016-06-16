@@ -450,7 +450,7 @@ module MyAnimeList
 
       # Image URL.
       if image_node = doc.at('div#content tr td div img')
-        manga.image_url = image_node['src']
+        manga.image_url = image_node['data-src']
       end
 
       # -
