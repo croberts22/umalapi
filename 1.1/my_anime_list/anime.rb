@@ -747,10 +747,10 @@ module MyAnimeList
                 id = actor_name_url[%r{/people/(\d+)/.*?}, 1].to_s
 
                 # Actor's image URL
-                actor_image_url = inner_tr.xpath('td[2]').at('div/a/img/@src').to_s
+                actor_image_url = inner_tr.xpath('td[2]').at('div/a/img/@data-srcset').to_s
 
                 # umalapi-27: Update in MAL's html caused inaccessible image URLs.
-                actor_image_url = 'http://cdn.myanimelist.net' + actor_image_url.match(%r{/images/voiceactors/.*.jpg}).to_s
+                actor_image_url = 'http://cdn.myanimelist.net' + actor_image_url.match(%r{/images/voiceactors/.*?.jpg}).to_s
 
                 if actor_name.length > 0
                   voice_actor_details << {
