@@ -5,7 +5,7 @@ module MyAnimeList
 
     # Scrape character details page on MyAnimeList.net.
     def self.scrape_character(id)
-      curl = Curl::Easy.new("http://myanimelist.net/character/#{id}")
+      curl = Curl::Easy.new("https://myanimelist.net/character/#{id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
 

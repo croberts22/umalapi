@@ -5,7 +5,7 @@ module MyAnimeList
 
     # Scrape actor details page on MyAnimeList.net.
     def self.scrape_actor(id)
-      curl = Curl::Easy.new("http://myanimelist.net/people/#{id}")
+      curl = Curl::Easy.new("https://myanimelist.net/people/#{id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
 

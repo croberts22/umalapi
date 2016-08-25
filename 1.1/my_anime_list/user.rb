@@ -13,11 +13,11 @@ module MyAnimeList
 
       history_url = case options[:type]
       when :anime
-        "http://myanimelist.net/history/#{username}/anime"
+        "https://myanimelist.net/history/#{username}/anime"
       when :manga
-        "http://myanimelist.net/history/#{username}/manga"
+        "https://myanimelist.net/history/#{username}/manga"
       else
-        "http://myanimelist.net/history/#{username}"
+        "https://myanimelist.net/history/#{username}"
       end
 
       curl = Curl::Easy.new(history_url)
@@ -39,12 +39,12 @@ module MyAnimeList
         next unless cells && cells.size == 2
 
         link = cells[0].at('a')
-        anime_id = link['href'][%r{http://myanimelist.net/anime.php\?id=(\d+)}, 1]
-        anime_id = link['href'][%r{http://myanimelist.net/anime/(\d+)/?.*}, 1] unless anime_id
+        anime_id = link['href'][%r{http[s]?://myanimelist.net/anime.php\?id=(\d+)}, 1]
+        anime_id = link['href'][%r{http[s]?://myanimelist.net/anime/(\d+)/?.*}, 1] unless anime_id
         anime_id = anime_id.to_i
 
-        manga_id = link['href'][%r{http://myanimelist.net/manga.php\?id=(\d+)}, 1]
-        manga_id = link['href'][%r{http://myanimelist.net/manga/(\d+)/?.*}, 1] unless manga_id
+        manga_id = link['href'][%r{http[s]?://myanimelist.net/manga.php\?id=(\d+)}, 1]
+        manga_id = link['href'][%r{http[s]?://myanimelist.net/manga/(\d+)/?.*}, 1] unless manga_id
         manga_id = manga_id.to_i
 
         title = link.text.strip
@@ -78,7 +78,7 @@ module MyAnimeList
 
 
     def profile
-      profile_url = "http://myanimelist.net/profile/#{username}"
+      profile_url = "https://myanimelist.net/profile/#{username}"
       curl = Curl::Easy.new(profile_url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']

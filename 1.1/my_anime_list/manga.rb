@@ -13,7 +13,7 @@ module MyAnimeList
 
     # Scrape manga details page on MyAnimeList.net.
     def self.scrape_manga(id, cookie_string = nil)
-      curl = Curl::Easy.new("http://myanimelist.net/manga/#{id}")
+      curl = Curl::Easy.new("https://myanimelist.net/manga/#{id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string if cookie_string
@@ -68,7 +68,7 @@ module MyAnimeList
       end
 
       # There're different URLs to POST to for adding and updating a manga.
-      url = options[:new] ? 'http://myanimelist.net/includes/ajax.inc.php?t=49' : 'http://myanimelist.net/includes/ajax.inc.php?t=34'
+      url = options[:new] ? 'https://myanimelist.net/includes/ajax.inc.php?t=49' : 'https://myanimelist.net/includes/ajax.inc.php?t=34'
 
       curl = Curl::Easy.new(url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
@@ -106,7 +106,7 @@ module MyAnimeList
     def self.delete(id, cookie_string)
       manga = scrape_manga(id, cookie_string)
 
-      curl = Curl::Easy.new("http://myanimelist.net/panel.php?go=editmanga&id=#{manga.listed_manga_id}")
+      curl = Curl::Easy.new("https://myanimelist.net/panel.php?go=editmanga&id=#{manga.listed_manga_id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string
@@ -142,7 +142,7 @@ module MyAnimeList
 
           # Strip everything after the manga ID - in cases where there is a non-ASCII character in the URL,
           # MyAnimeList.net will return a page that says "Access has been restricted for this account".
-          redirect_url = response['location'].sub(%r{(http://myanimelist.net/manga/\d+)/?.*}, '\1')
+          redirect_url = response['location'].sub(%r{(http[s]?://myanimelist.net/manga/\d+)/?.*}, '\1')
 
           response = Net::HTTP.start('myanimelist.net', 80) do |http|
             http.get(redirect_url, {'User-Agent' => ENV['USER_AGENT']})
@@ -172,7 +172,7 @@ module MyAnimeList
           manga_title_node = results_row.at('td a strong')
           next unless manga_title_node
           url = manga_title_node.parent['href']
-          next unless url.match %r{http://myanimelist.net/manga/(\d+)/?.*}
+          next unless url.match %r{http[s]?://myanimelist.net/manga/(\d+)/?.*}
 
           manga = Manga.new
           manga.id = $1.to_i
@@ -436,7 +436,7 @@ module MyAnimeList
         manga.id = manga_id_input['value'].to_i
       else
         details_link = doc.at('//a[text()="Details"]')
-        manga.id = details_link['href'][%r{http://myanimelist.net/manga/(\d+)/.*?}, 1].to_i
+        manga.id = details_link['href'][%r{http[s]?://myanimelist.net/manga/(\d+)/.*?}, 1].to_i
       end
 
       # Title and rank.

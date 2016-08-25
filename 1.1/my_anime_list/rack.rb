@@ -22,7 +22,7 @@ module MyAnimeList
       # Authenticate with MyAnimeList.net.
       def authenticate_with_mal(username, password)
 
-        curl = Curl::Easy.new('http://myanimelist.net/login.php')
+        curl = Curl::Easy.new('https://myanimelist.net/login.php')
         curl.headers['User-Agent'] = ENV['USER_AGENT']
         curl.interface = ENV['INTERFACE']
 
@@ -34,7 +34,7 @@ module MyAnimeList
           cookies << "#{$1}=#{$2}" if header =~ /^Set-Cookie: ([^=])=([^;]+;)/
 
           # A HTTP 302 redirection to the MAL panel indicates successful authentication.
-          authenticated = true if header =~ %r{^Location: http://myanimelist.net/panel.php\s+}
+          authenticated = true if header =~ %r{^Location: https://myanimelist.net/panel.php\s+}
 
           header.length
         }

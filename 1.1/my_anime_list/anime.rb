@@ -24,7 +24,7 @@ module MyAnimeList
         scrape_character_info = options.include? 'characters_and_staff'
       end
 
-      curl = Curl::Easy.new("http://myanimelist.net/anime/#{id}")
+      curl = Curl::Easy.new("https://myanimelist.net/anime/#{id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string if cookie_string
@@ -123,7 +123,7 @@ module MyAnimeList
       end
 
       # There're different URLs to POST to for adding and updating an anime.
-      url = options[:new] ? 'http://myanimelist.net/includes/ajax.inc.php?t=61' : 'http://myanimelist.net/includes/ajax.inc.php?t=62'
+      url = options[:new] ? 'https://myanimelist.net/includes/ajax.inc.php?t=61' : 'https://myanimelist.net/includes/ajax.inc.php?t=62'
 
       curl = Curl::Easy.new(url)
       curl.headers['User-Agent'] = ENV['USER_AGENT']
@@ -160,7 +160,7 @@ module MyAnimeList
     def self.delete(id, cookie_string)
       anime = scrape_anime(id, nil, cookie_string)
 
-      curl = Curl::Easy.new("http://myanimelist.net/panel.php?go=edit&id=#{anime.listed_anime_id}")
+      curl = Curl::Easy.new("https://myanimelist.net/panel.php?go=edit&id=#{anime.listed_anime_id}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
       curl.cookies = cookie_string
@@ -217,7 +217,7 @@ module MyAnimeList
       limit = (page.to_i - 1) * 50
       type = options[:type].to_s.downcase || 'tv'
 
-      curl = Curl::Easy.new("http://myanimelist.net/topanime.php?type=#{type}&limit=#{limit}")
+      curl = Curl::Easy.new("https://myanimelist.net/topanime.php?type=#{type}&limit=#{limit}")
       curl.headers['User-Agent'] = ENV['USER_AGENT']
       curl.interface = ENV['INTERFACE']
       begin
@@ -621,7 +621,7 @@ module MyAnimeList
 
               # Strip everything after the anime ID - in cases where there is a non-ASCII character in the URL,
               # MyAnimeList.net will return a page that says "Access has been restricted for this account".
-              redirect_url = response['location'].sub(%r{(http://myanimelist.net/anime/\d+)/?.*}, '\1')
+              redirect_url = response['location'].sub(%r{(http[s]?://myanimelist.net/anime/\d+)/?.*}, '\1')
 
               response = Net::HTTP.start('myanimelist.net', 80) do |http|
                 http.get(redirect_url, {'User-Agent' => ENV['USER_AGENT']})
@@ -649,7 +649,7 @@ module MyAnimeList
             anime_title_node = results_row.at('td a strong')
             next unless anime_title_node
             url = anime_title_node.parent['href']
-            next unless url.match %r{http://myanimelist.net/anime/(\d+)/?.*}
+            next unless url.match %r{http[s]?://myanimelist.net/anime/(\d+)/?.*}
 
             anime = Anime.new
             anime.id = $1.to_i
@@ -859,7 +859,7 @@ module MyAnimeList
           anime.id = anime_id_input['value'].to_i
         else
           details_link = doc.at('//a[text()="Details"]')
-          anime.id = details_link['href'][%r{http://myanimelist.net/anime/(\d+)/.*?}, 1].to_i
+          anime.id = details_link['href'][%r{http[s]?://myanimelist.net/anime/(\d+)/.*?}, 1].to_i
         end
 
         # Title and rank.
