@@ -871,7 +871,7 @@ module MyAnimeList
         anime.rank = doc.at('div[@id="contentWrapper"] > div > table > tr > td > div > div > span:contains("Ranked:")').next.text.gsub(/\D/, '').to_i
 
         if image_node = doc.at('div#content tr td div img')
-          anime.image_url = image_node['data-src']
+          anime.image_url = image_node['data-src'] || image_node['src']
         end
 
         # -
