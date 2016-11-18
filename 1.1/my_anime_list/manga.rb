@@ -2,7 +2,7 @@ module MyAnimeList
   class Manga
     attr_accessor :id, :title, :rank, :image_url, :popularity_rank, :volumes, :chapters,
                   :members_score, :members_count, :favorited_count, :synopsis
-    attr_accessor :listed_manga_id
+    attr_accessor :listed_manga_id, :parent_story
     attr_reader :type, :status
     attr_writer :genres, :tags, :other_titles, :anime_adaptations, :related_manga, :alternative_versions,
                 :prequels, :sequels, :side_stories, :spin_offs, :summaries, :alternative_settings, :full_stories, :others
@@ -330,6 +330,7 @@ module MyAnimeList
         :tags => tags,
         :synopsis => synopsis,
         :anime_adaptations => anime_adaptations,
+        :parent_story => parent_story,
         :related_manga => related_manga,
         :alternative_versions => alternative_versions,
         :read_status => read_status,
@@ -636,7 +637,7 @@ module MyAnimeList
 
           if related_manga_text.match(/Parent story:\<\/td\>(.+?)\<\/td\>/m)
             $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
-              manga.parent_story << {
+              manga.parent_story = {
                   :manga_id => manga_id,
                   :title => title,
                   :url => url
