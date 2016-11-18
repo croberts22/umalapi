@@ -636,7 +636,7 @@ module MyAnimeList
 
           if related_manga_text.match(/Parent story:\<\/td\>(.+?)\<\/td\>/m)
             $1.scan(%r{<a href="(/manga/(\d+)/.*?)">(.+?)</a>}) do |url, manga_id, title|
-              manga.parent_story = {
+              manga.parent_story << {
                   :manga_id => manga_id,
                   :title => title,
                   :url => url
