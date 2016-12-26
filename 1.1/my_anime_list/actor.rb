@@ -263,7 +263,7 @@ module MyAnimeList
         anime = {}
         character = {}
 
-        anime_image_url = tr.xpath('td[1]/div/a/img/@data-src').to_s
+        anime_image_url = tr.xpath('td[1]/div/a/img/@data-src').to_s || tr.xpath('td[1]/div/a/img/@src').to_s
 
         # umalapi-27: Update in MAL's html caused inaccessible image URLs.
         unless anime_image_url.match(%r{questionmark}) then
@@ -277,7 +277,7 @@ module MyAnimeList
         anime[:name] = tr.xpath('td[2]/a/text()').to_s
         anime[:id] = anime_url[%r{/anime/(\d+)/.*?}, 1].to_s
 
-        character_image_url = tr.xpath('td[4]/div/a/img/@data-src').to_s
+        character_image_url = tr.xpath('td[4]/div/a/img/@data-src').to_s || tr.xpath('td[4]/div/a/img/@src').to_s
 
         # umalapi-27: Update in MAL's html caused inaccessible image URLs.
         unless character_image_url.match(%r{questionmark}) then
