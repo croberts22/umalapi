@@ -710,7 +710,7 @@ module MyAnimeList
               image_url = td.at('img/@data-src').to_s || td.at('img/@src').to_s
 
               # umalapi-27: Update in MAL's html caused inaccessible image URLs.
-              image_url = 'http://cdn.myanimelist.net' + image_url.match(%r{/images/characters/.*.jpg}).to_s
+              image_url = 'https://myanimelist.cdn-dena.com' + image_url.match(%r{/images/characters/.*.jpg}).to_s
 
               id = character_url[%r{/character/(\d+)/.*?}, 1].to_s
 
@@ -750,7 +750,7 @@ module MyAnimeList
                 actor_image_url = inner_tr.xpath('td[2]').at('div/a/img/@data-src').to_s || inner_tr.xpath('td[2]').at('div/a/img/@src').to_s
 
                 # umalapi-27: Update in MAL's html caused inaccessible image URLs.
-                actor_image_url = 'http://cdn.myanimelist.net' + actor_image_url.match(%r{/images/voiceactors/.*?.jpg}).to_s
+                actor_image_url = 'https://myanimelist.cdn-dena.com' + actor_image_url.match(%r{/images/voiceactors/.*?.jpg}).to_s
 
                 if actor_name.length > 0
                   voice_actor_details << {

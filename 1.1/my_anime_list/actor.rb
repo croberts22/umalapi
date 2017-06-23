@@ -267,7 +267,7 @@ module MyAnimeList
 
         # umalapi-27: Update in MAL's html caused inaccessible image URLs.
         unless anime_image_url.match(%r{questionmark}) then
-          anime_image_url = ('http://cdn.myanimelist.net' + anime_image_url.match(%r{/images/anime/.*.jpg}).to_s).gsub(/t.jpg/, '.jpg').gsub(/r\/\d+x\d+\//, '').gsub(/\?s=.*/, '')
+          anime_image_url = ('https://myanimelist.cdn-dena.com' + anime_image_url.match(%r{/images/anime/.*.jpg}).to_s).gsub(/t.jpg/, '.jpg').gsub(/r\/\d+x\d+\//, '').gsub(/\?s=.*/, '')
           anime[:image_url] = anime_image_url
         end
 
@@ -281,7 +281,7 @@ module MyAnimeList
 
         # umalapi-27: Update in MAL's html caused inaccessible image URLs.
         unless character_image_url.match(%r{questionmark}) then
-          character_image_url = ('http://cdn.myanimelist.net' + character_image_url.match(%r{/images/characters/.*.jpg}).to_s).gsub(/t.jpg/, '.jpg').gsub(/r\/\d+x\d+\//, '').gsub(/\?s=.*/, '')
+          character_image_url = ('https://myanimelist.cdn-dena.com' + character_image_url.match(%r{/images/characters/.*.jpg}).to_s).gsub(/t.jpg/, '.jpg').gsub(/r\/\d+x\d+\//, '').gsub(/\?s=.*/, '')
           character[:image_url] = character_image_url
         end
 
