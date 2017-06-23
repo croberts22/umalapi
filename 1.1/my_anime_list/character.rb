@@ -98,7 +98,7 @@ module MyAnimeList
 
         # umalapi-27: Update in MAL's html caused inaccessible image URLs.
         unless anime_image_url.match(%r{questionmark}) then
-          anime_image_url = 'http://cdn.myanimelist.net' + anime_image_url.match(%r{/images/anime/.*.jpg}).to_s
+          anime_image_url = 'https://myanimelist.cdn-dena.com' + anime_image_url.match(%r{/images/anime/.*.jpg}).to_s
           anime[:image_url] = anime_image_url
         end
 
@@ -121,7 +121,7 @@ module MyAnimeList
 
         # umalapi-27: Update in MAL's html caused inaccessible image URLs.
         unless manga_image_url.match(%r{questionmark}) then
-          manga_image_url = 'http://cdn.myanimelist.net' + manga_image_url.match(%r{/images/manga/.*.jpg}).to_s
+          manga_image_url = 'https://myanimelist.cdn-dena.com' + manga_image_url.match(%r{/images/manga/.*.jpg}).to_s
           manga[:image_url] = manga_image_url
         end
 
